@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import { LoginScreen } from './screens/LoginScreen';
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy } from 'react';
 import { HomeScreen } from './screens/HomeScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
 
@@ -14,21 +14,8 @@ const LazyRegisterScreen = lazy(() =>
 function Body() {
     const authInfo = useAuth();
 
-    const calculate1vh = () => {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-
-    useEffect(() => {
-        calculate1vh();
-        window.addEventListener('resize', calculate1vh);
-        return () => {
-            window.removeEventListener('resize', calculate1vh);
-        };
-    }, []);
-
     return (
-        <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+        <div style={{ width: '100vw', height: '100%', position: 'relative' }}>
             <BrowserRouter>
                 {authInfo.isLoadingUserInfo === false ? (
                     <>

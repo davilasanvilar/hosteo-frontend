@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { PublicFormLayout } from '../components/organism/publicformlayout/PublicFormLayout';
 import { Layout } from '../components/organism/layout/Layout';
 import { useMutation } from '@tanstack/react-query';
-import { Button, TextInput, useMantineTheme } from '@mantine/core';
+import { Button, TextInput } from '@mantine/core';
 import {
     IconAt,
     IconEye,
@@ -21,16 +21,16 @@ import {
     IconLock,
     IconUser
 } from '@tabler/icons-react';
-import { notifications } from '@mantine/notifications';
 import {
     showNotificationError,
     showNotificationSuccess
 } from '../utils/notifUtils';
+import { useScreen } from '../hooks/useScreen';
 
 export function RegisterScreen() {
     const { register } = useApi();
     const navigate = useNavigate();
-    const theme = useMantineTheme();
+    const { isTablet } = useScreen();
 
     const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
@@ -222,7 +222,7 @@ export function RegisterScreen() {
                     }
                 />
                 <Button
-                    mt={'0.75rem'}
+                    mt={isTablet ? '0.75rem' : 'auto'}
                     w={'100%'}
                     disabled={disabledButton}
                     loading={isLoading}

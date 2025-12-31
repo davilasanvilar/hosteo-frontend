@@ -38,7 +38,6 @@ const queryClient = new QueryClient({
 export const ReactQueryProvider = ({ children }: { children: ReactNode }) => {
     // const { showToast } = useToast();
 
-
     const value: ReactQueryContext = {
         queryClient: queryClient
     };
@@ -47,7 +46,7 @@ export const ReactQueryProvider = ({ children }: { children: ReactNode }) => {
         <ReactQueryContext.Provider value={value}>
             <QueryClientProvider client={queryClient}>
                 {children}
-                <ReactQueryDevtools initialIsOpen={true} />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             </QueryClientProvider>
         </ReactQueryContext.Provider>
     );

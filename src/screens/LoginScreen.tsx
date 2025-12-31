@@ -107,7 +107,7 @@ export function LoginScreen() {
                     onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <Button
-                    mt={'0.75rem'}
+                    mt={'auto'}
                     w={'100%'}
                     type="submit"
                     disabled={disabledButton}
