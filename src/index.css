@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 ::-webkit-scrollbar {
 }
 
@@ -15,6 +11,7 @@
 #root {
     width: 100%;
     height: auto;
+    background-color: var(--mantine-color-background-3);
     overflow: auto;
     min-height: calc(var(--vh, 1vh) * 100);
     display: flex;

@@ -1,0 +1,64 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border-radius: 0.5rem;
+    max-height: 55rem;
+    min-width: 45rem;
+    margin: auto;
+    background-color: var(--mantine-color-background-0);
+    box-shadow: var(--mantine-shadow-xl);
+}
+
+@media (min-width: 768px) {
+    .container {
+        width: 500px;
+        height: auto;
+    }
+}
+
+.logoSection {
+    width: 100%;
+    background-image: url('home_background.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.contentSection {
+    width: 100%;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.logoOverlay {
+    width: 100%;
+    display: flex;
+    backdrop-filter: blur(2px);
+    background-color: rgba(255, 255, 255, 0.781);
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.logo {
+    margin-bottom: 2.5rem;
+    align-self: center;
+    width: 200px;
+}
+
+.title {
+    margin-bottom: 1rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.buttonContainer {
+    width: 100%;
+}

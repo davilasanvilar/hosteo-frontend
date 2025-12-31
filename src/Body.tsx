@@ -10,23 +10,6 @@ const LazyRegisterScreen = lazy(() =>
         default: module.RegisterScreen
     }))
 );
-const LazyValidateAccountScreen = lazy(() =>
-    import('./screens/ValidateAccountScreen').then((module) => ({
-        default: module.ValidateAccountScreen
-    }))
-);
-
-const LazyForgottenPasswordScreen = lazy(() =>
-    import('./screens/ForgottenPasswordScreen').then((module) => ({
-        default: module.ForgottenPasswordScreen
-    }))
-);
-
-const LazyResetPasswordScreen = lazy(() =>
-    import('./screens/ResetPasswordScreen').then((module) => ({
-        default: module.ResetPasswordScreen
-    }))
-);
 
 function Body() {
     const authInfo = useAuth();
@@ -44,9 +27,8 @@ function Body() {
         };
     }, []);
 
-
     return (
-        <div className="w-full h-full relative ">
+        <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
             <BrowserRouter>
                 {authInfo.isLoadingUserInfo === false ? (
                     <>
@@ -62,30 +44,6 @@ function Body() {
                                     element={
                                         <Suspense fallback={<LoadingScreen />}>
                                             <LazyRegisterScreen />
-                                        </Suspense>
-                                    }
-                                />
-                                <Route
-                                    path="/validate/:username/:code"
-                                    element={
-                                        <Suspense fallback={<LoadingScreen />}>
-                                            <LazyValidateAccountScreen />
-                                        </Suspense>
-                                    }
-                                />
-                                <Route
-                                    path="/reset-password/:username/:code"
-                                    element={
-                                        <Suspense fallback={<LoadingScreen />}>
-                                            <LazyResetPasswordScreen />
-                                        </Suspense>
-                                    }
-                                />
-                                <Route
-                                    path="/recover-password"
-                                    element={
-                                        <Suspense fallback={<LoadingScreen />}>
-                                            <LazyForgottenPasswordScreen />
                                         </Suspense>
                                     }
                                 />

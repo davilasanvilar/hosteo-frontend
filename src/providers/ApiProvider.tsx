@@ -5,8 +5,6 @@ import { checkResponseException } from '../utils/utilFunctions';
 
 export interface ApiContext {
     register: (user: RegisterUserForm) => void;
-    sendValidationCode: (username: string) => Promise<void>;
-    validateAccount: (username: string, code: string) => Promise<void>;
     forgottenPassword: (username: string) => Promise<void>;
     resetPassword: (
         username: string,
@@ -31,29 +29,6 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
         };
         const res = await fetch(url, options);
         const resObject: ApiResponse<User> = await res.json();
-        checkResponseException(res, resObject);
-    };
-
-    const sendValidationCode = async (username: string): Promise<void> => {
-        const url = `${apiUrl}public/validate/${username}/resend`;
-        const options: RequestInit = {
-            method: 'POST'
-        };
-        const res = await fetch(url, options);
-        const resObject: ApiResponse<void> = await res.json();
-        checkResponseException(res, resObject);
-    };
-
-    const validateAccount = async (
-        username: string,
-        code: string
-    ): Promise<void> => {
-        const url = `${apiUrl}public/validate/${username}/${code}`;
-        const options: RequestInit = {
-            method: 'POST'
-        };
-        const res = await fetch(url, options);
-        const resObject: ApiResponse<unknown> = await res.json();
         checkResponseException(res, resObject);
     };
 
@@ -87,8 +62,6 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
 
     const value: ApiContext = {
         register,
-        sendValidationCode,
-        validateAccount,
         forgottenPassword,
         resetPassword
     };

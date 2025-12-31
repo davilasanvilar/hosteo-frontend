@@ -1,5 +1,5 @@
 import { useAuth } from '../hooks/useAuth';
-import { Layout } from '../components/organism/Layout';
+import { Layout } from '../components/organism/layout/Layout';
 
 export function HomeScreen() {
     const { user, logout } = useAuth();
