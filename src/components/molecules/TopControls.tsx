@@ -5,23 +5,22 @@ import { useState } from 'react';
 import { FiltersModal } from '../modals/FiltersModal';
 
 interface TopControlsProps {
-    searchNameComponent: React.ReactNode;
-    stateSearchComponent: React.ReactNode;
+    keywordFilter: React.ReactNode;
+    filters: React.ReactNode;
     cardViewModeComponent: React.ReactNode;
     addButton: React.ReactNode;
     filtersOnModalActivated: boolean;
 }
 
 export function TopControls({
-    searchNameComponent,
-    stateSearchComponent,
+    keywordFilter,
+    filters,
     cardViewModeComponent,
     addButton,
     filtersOnModalActivated
 }: TopControlsProps) {
     const { isTablet } = useScreen();
     const [filtersOpened, setFiltersOpened] = useState(false);
-    const [filtersActive, setFiltersActive] = useState(false);
 
     return isTablet ? (
         <section
@@ -29,8 +28,8 @@ export function TopControls({
         >
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    {searchNameComponent}
-                    {stateSearchComponent}
+                    {keywordFilter}
+                    {filters}
                 </div>
                 {addButton}
             </div>
@@ -61,7 +60,7 @@ export function TopControls({
                         <IconFilter />
                     </ActionIcon>
                 </Indicator>
-                {searchNameComponent}
+                {keywordFilter}
             </div>
             {!isTablet && filtersOpened && (
                 <FiltersModal
@@ -69,7 +68,7 @@ export function TopControls({
                     onClose={() => setFiltersOpened(false)}
                     title="Filters"
                 >
-                    {stateSearchComponent}
+                    {filters}
                 </FiltersModal>
             )}
         </section>

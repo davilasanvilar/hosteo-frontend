@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { ErrorCode } from './enums';
 
 export interface SelectOption {
@@ -9,6 +10,18 @@ export interface Page<T> {
     totalRows: number;
     totalPages: number;
     content: T[];
+}
+
+export interface Card<T> {
+    item: T;
+    onClick?: () => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
+}
+
+export interface TableStructure<T> {
+    headers: ReactNode[];
+    accesorMethods: ((item: T) => ReactNode)[];
 }
 
 export interface ApiResponse<T> {
@@ -37,3 +50,4 @@ export class ApiError extends Error {
         this.code = code;
     }
 }
+

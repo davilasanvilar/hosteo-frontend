@@ -6,12 +6,12 @@ import styles from './ApartmentCard.module.css';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 export function ApartmentCard({
-    apartment,
+    item,
     onClick,
     onEdit,
     onDelete
 }: {
-    apartment: Apartment;
+    item: Apartment;
     onClick?: () => void;
     onEdit?: () => void;
     onDelete?: () => void;
@@ -43,8 +43,8 @@ export function ApartmentCard({
                 <div
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                    <Title order={4}>{apartment.name}</Title>
-                    <ApartmentStateBadge state={apartment.state} />
+                    <Title order={4}>{item.name}</Title>
+                    <ApartmentStateBadge state={item.state} />
                 </div>
                 <div
                     style={{
@@ -56,7 +56,7 @@ export function ApartmentCard({
                     }}
                 >
                     <Text c="dimmed" size="sm">
-                        {addressToString(apartment.address)}
+                        {addressToString(item.address)}
                     </Text>
                     <div
                         style={{
