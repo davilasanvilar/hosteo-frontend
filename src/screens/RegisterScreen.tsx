@@ -7,7 +7,7 @@ import {
     upperLowerCaseValidator,
     useValidator
 } from '../hooks/useValidator';
-import { ApiError, ErrorCode } from '../types/types';
+import { ApiError } from '../types/types';
 import StatusCode from 'status-code-enum';
 import { useNavigate } from 'react-router-dom';
 import { PublicFormLayout } from '../components/organism/publicformlayout/PublicFormLayout';
@@ -26,6 +26,7 @@ import {
     showNotificationSuccess
 } from '../utils/notifUtils';
 import { useScreen } from '../hooks/useScreen';
+import { ErrorCode } from '../types/enums';
 
 export function RegisterScreen() {
     const { register } = useApi();
@@ -111,10 +112,6 @@ export function RegisterScreen() {
                         return;
                     }
                 }
-            }
-            if (e instanceof Error) {
-                showNotificationError('Internal error');
-                return;
             }
         }
     });

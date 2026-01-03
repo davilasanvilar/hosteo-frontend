@@ -8,13 +8,24 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: var(--mantine-color-background-3);
+}
+
 #root {
     width: 100%;
     height: 100dvh;
-    background-color: var(--mantine-color-background-3);
     overflow: auto;
     min-height: 100dvh;
     display: flex;
+    scrollbar-gutter: stable;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    height: 100%;
 }
 
 @media (min-width: 768px) {

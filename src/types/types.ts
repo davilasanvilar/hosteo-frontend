@@ -1,12 +1,14 @@
+import { ErrorCode } from './enums';
+
 export interface SelectOption {
     label: string;
     value: string;
 }
 
 export interface Page<T> {
-    page: number;
+    totalRows: number;
     totalPages: number;
-    data: T[];
+    content: T[];
 }
 
 export interface ApiResponse<T> {
@@ -34,16 +36,4 @@ export class ApiError extends Error {
         this.statusCode = statusCode;
         this.code = code;
     }
-}
-
-export enum ErrorCode {
-    NOT_JWT_TOKEN = 'NOT_JWT_TOKEN',
-    NOT_CSR_TOKEN = 'NOT_CSR_TOKEN',
-    INVALID_TOKEN = 'INVALID_TOKEN',
-    NOT_VALIDATED_ACCOUNT = 'NOT_VALIDATED_ACCOUNT',
-    USERNAME_IN_USE = 'USERNAME_IN_USE',
-    EMAIL_IN_USE = 'EMAIL_IN_USE',
-    INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
-    USER_AGENT_NOT_MATCH = 'USER_AGENT_NOT_MATCH',
-    TOKEN_ALREADY_USED = 'TOKEN_ALREADY_USED'
 }

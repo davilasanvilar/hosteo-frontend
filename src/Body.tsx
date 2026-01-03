@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import { LoginScreen } from './screens/LoginScreen';
 import { Suspense, lazy } from 'react';
@@ -11,37 +11,48 @@ const LazyRegisterScreen = lazy(() =>
     }))
 );
 
+const LazyApartmentsScreen = lazy(() =>
+    import('./screens/ApartmentsScreen').then((module) => ({
+        default: module.ApartmentsScreen
+    }))
+);
+
 function Body() {
     const authInfo = useAuth();
 
-    return (
-        <div style={{ width: '100vw', height: '100%', position: 'relative' }}>
-            <BrowserRouter>
-                {authInfo.isLoadingUserInfo === false ? (
-                    <>
-                        <Suspense fallback={<LoadingScreen />}>
-                            <Routes>
-                                <Route path="/" element={<HomeScreen />} />
-                                <Route
-                                    path="/login"
-                                    element={<LoginScreen />}
-                                />
-                                <Route
-                                    path="/register"
-                                    element={
-                                        <Suspense fallback={<LoadingScreen />}>
-                                            <LazyRegisterScreen />
-                                        </Suspense>
-                                    }
-                                />
-                            </Routes>
-                        </Suspense>
-                    </>
-                ) : (
-                    <LoadingScreen />
-                )}
-            </BrowserRouter>
+    return authInfo.isLoadingUserInfo === false ? (
+        <div
+            style={{
+                width: '100vw',
+                height: '100%',
+                position: 'relative'
+            }}
+        >
+            <Suspense fallback={<LoadingScreen />}>
+                <Routes>
+                    <Route path="/" element={<HomeScreen />} />
+                    <Route path="/login" element={<LoginScreen />} />
+                    <Route
+                        path="/register"
+                        element={
+                            <Suspense fallback={<LoadingScreen />}>
+                                <LazyRegisterScreen />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/apartments"
+                        element={
+                            <Suspense fallback={<LoadingScreen />}>
+                                <LazyApartmentsScreen />
+                            </Suspense>
+                        }
+                    />
+                </Routes>
+            </Suspense>
         </div>
+    ) : (
+        <LoadingScreen />
     );
 }
 

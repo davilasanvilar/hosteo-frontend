@@ -17,13 +17,16 @@
 
 .privateMain {
     width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     height: 100%;
-    max-width: 500px;
+    max-width: 80rem;
+    min-height: 100%;
     margin: auto;
     padding: 2rem;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .notLoggedInWrapper {

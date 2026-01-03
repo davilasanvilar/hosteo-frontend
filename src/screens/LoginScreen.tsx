@@ -2,17 +2,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useValidator, notEmptyValidator } from '../hooks/useValidator';
-import { ApiError, ErrorCode } from '../types/types';
+import { ApiError } from '../types/types';
+import { ErrorCode } from '../types/enums';
 import { PublicFormLayout } from '../components/organism/publicformlayout/PublicFormLayout';
 import { Layout } from '../components/organism/layout/Layout';
 import StatusCode from 'status-code-enum';
 import { useMutation } from '@tanstack/react-query';
 import { Button, Checkbox, TextInput } from '@mantine/core';
 import { showNotificationError } from '../utils/notifUtils';
+import { useError } from '../hooks/useError';
 
 export function LoginScreen() {
     const auth = useAuth();
     const navigate = useNavigate();
+    const { handleError } = useError();
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -59,10 +62,7 @@ export function LoginScreen() {
                     return;
                 }
             }
-            if (e instanceof Error) {
-                showNotificationError('Internal error');
-                return;
-            }
+            handleError(e);
         }
     });
 

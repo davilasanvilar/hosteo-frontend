@@ -4,17 +4,17 @@ import { useAuth } from './useAuth';
 
 interface CrudOperations<T> {
     create: (form: unknown) => Promise<T>;
-    update: (id: string, form: unknown) => Promise<T>;
+    update: (form: unknown) => Promise<T>;
     get: (id: string) => Promise<T>;
     search: (
-        page: number,
+        pageNumber: number,
         pageSize: number | null,
         filters: SearchFilters
     ) => Promise<Page<T>>;
-    remove: (id: string) => void;
+    remove: (id: string) => Promise<void>;
 }
 
-type SearchFilters = { [key: string]: string | boolean | string[] };
+type SearchFilters = { [key: string]: string | boolean | string[] | undefined };
 
 export function useCrud<T>(entity: string): CrudOperations<T> {
     const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -34,8 +34,9 @@ export function useCrud<T>(entity: string): CrudOperations<T> {
         checkResponseException(res, resObject);
         return resObject.data;
     };
-    const update = async (id: string, form: unknown): Promise<T> => {
-        const url = `${apiUrl}${entity}/${id}`;
+
+    const update = async (form: unknown): Promise<T> => {
+        const url = `${apiUrl}${entity}`;
         const options: RequestInit = {
             method: 'PATCH',
             body: JSON.stringify(form),
@@ -64,11 +65,11 @@ export function useCrud<T>(entity: string): CrudOperations<T> {
     };
 
     const search = async (
-        page: number,
+        pageNumber: number,
         pageSize: number | null,
         filters: SearchFilters
     ) => {
-        const body = { page, pageSize };
+        const body = { pageNumber, pageSize };
         Object.assign(body, filters);
 
         const url = `${apiUrl}${entity}/search`;

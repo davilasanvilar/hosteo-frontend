@@ -1,7 +1,8 @@
 import { createContext, ReactNode } from 'react';
-import { RegisterUserForm, User } from '../types/entities';
+import { User } from '../types/entities';
 import { ApiResponse } from '../types/types';
 import { checkResponseException } from '../utils/utilFunctions';
+import { RegisterUserForm } from '../types/forms';
 
 export interface ApiContext {
     register: (user: RegisterUserForm) => void;

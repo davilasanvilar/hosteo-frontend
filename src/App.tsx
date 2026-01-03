@@ -2,28 +2,39 @@ import Body from './Body';
 import { ApiProvider } from './providers/ApiProvider';
 import { AuthProvider } from './providers/AuthProvider';
 import { ScreenProvider } from './providers/ScreenProvider';
-import { FlagsProvider } from './providers/FlagsProvider';
 import { StrictMode } from 'react';
 import { ReactQueryProvider } from './providers/ReactQueryProvider';
 import { LibraryProvider } from './providers/LibraryProvider';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import { ModalsProvider } from '@mantine/modals';
+import { BrowserRouter } from 'react-router-dom';
+import { ConfirmModalProvider } from './providers/ConfirmModalProvider';
 
 function App() {
     return (
         <StrictMode>
             <ScreenProvider>
-                <FlagsProvider>
-                    <ReactQueryProvider>
-                        <AuthProvider>
-                            <ApiProvider>
-                                <LibraryProvider>
-                                    <Body />
-                                </LibraryProvider>
-                            </ApiProvider>
-                        </AuthProvider>
-                    </ReactQueryProvider>
-                </FlagsProvider>
+                <ReactQueryProvider>
+                    <ApiProvider>
+                        <LibraryProvider>
+                            <ConfirmModalProvider>
+                                <ModalsProvider
+                                    labels={{
+                                        cancel: 'Cancel',
+                                        confirm: 'Confirm'
+                                    }}
+                                >
+                                    <BrowserRouter>
+                                        <AuthProvider>
+                                            <Body />
+                                        </AuthProvider>
+                                    </BrowserRouter>
+                                </ModalsProvider>
+                            </ConfirmModalProvider>
+                        </LibraryProvider>
+                    </ApiProvider>
+                </ReactQueryProvider>
             </ScreenProvider>
         </StrictMode>
     );

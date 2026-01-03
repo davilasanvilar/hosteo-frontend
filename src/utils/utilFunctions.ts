@@ -1,3 +1,4 @@
+import { Address } from '../types/entities';
 import { ApiError, ApiResponse } from '../types/types';
 
 export const checkResponseException = (
@@ -11,4 +12,11 @@ export const checkResponseException = (
             code: resObject.errorCode
         });
     }
+};
+
+export const addressToString = (address: Address | undefined) => {
+    if (!address) {
+        return '';
+    }
+    return `${address.street ? address.street + ',' : ''} ${address.zipCode ? address.zipCode : ''} ${address.city ? address.city : ''} ${address.country ? `(${address.country})` : ''}`;
 };

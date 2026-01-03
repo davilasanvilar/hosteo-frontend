@@ -1,0 +1,7 @@
+.selectableTr {
+    cursor: pointer;
+}
+
+.selectableTr:hover {
+    backdrop-filter: brightness(0.98);
+}

@@ -1,9 +1,12 @@
 import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 import { LoginResponse, User } from '../types/entities';
-import { ApiError, ApiResponse, ErrorCode } from '../types/types';
+import { ApiError, ApiResponse } from '../types/types';
 import { useQuery } from '@tanstack/react-query';
 import StatusCode from 'status-code-enum';
 import { useReactQuery } from '../hooks/useReactQuery';
+import { ErrorCode } from '../types/enums';
+import { showNotificationError } from '../utils/notifUtils';
+import { useError } from '../hooks/useError';
 
 export interface AuthContext {
     user?: User;
@@ -25,6 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authTokenRef = useRef<string | undefined>(undefined);
     const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
     let refreshingPromise: Promise<string> | null = null;
+    const { handleError } = useError();
 
     const { queryClient } = useReactQuery();
 
@@ -53,20 +57,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('sessionId', newTokensResponse.sessionId);
             return newTokensResponse.authToken;
         } else {
-            if (
-                refreshTokenResponse.status ===
-                    StatusCode.ClientErrorUnauthorized &&
-                [
-                    ErrorCode.USER_AGENT_NOT_MATCH,
-                    ErrorCode.TOKEN_ALREADY_USED,
-                    ErrorCode.INVALID_TOKEN
-                ].includes(refreshTokenResponseObj.errorCode)
-            ) {
-                cleanUserParams();
-                console.log('Your session has expired');
-            }
+            return '';
         }
-        return '';
     };
 
     const fetchWithAuth = async (url: string, options: RequestInit) => {

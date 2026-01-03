@@ -56,13 +56,6 @@
     margin-bottom: 1rem;
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    height: 100%;
-}
-
 .buttonContainer {
     width: 100%;
 }
