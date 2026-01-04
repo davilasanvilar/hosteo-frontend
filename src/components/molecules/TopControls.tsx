@@ -5,10 +5,10 @@ import { useState } from 'react';
 import { FiltersModal } from '../modals/FiltersModal';
 
 interface TopControlsProps {
-    keywordFilter: React.ReactNode;
-    filters: React.ReactNode;
-    cardViewModeComponent: React.ReactNode;
-    addButton: React.ReactNode;
+    keywordFilter?: React.ReactNode;
+    filters?: React.ReactNode;
+    cardViewModeComponent?: React.ReactNode;
+    addButton?: React.ReactNode;
     filtersOnModalActivated: boolean;
 }
 

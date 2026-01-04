@@ -14,9 +14,9 @@ export interface Page<T> {
 
 export interface Card<T> {
     item: T;
-    onClick?: () => void;
-    onEdit?: () => void;
-    onDelete?: () => void;
+    onClick?: (id: string) => void;
+    onEdit?: (id: string) => void;
+    onDelete?: (id: string) => void;
 }
 
 export interface TableStructure<T> {

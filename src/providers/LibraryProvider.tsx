@@ -128,7 +128,7 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                 }),
                 TextInput: TextInput.extend({
                     defaultProps: {
-                        w: isTablet ? 'auto' : '100%',
+                        w: '100%',
                         size: defaultSize,
                         radius: 'md' // You can also default the rounded corners while you're at it!
                     },

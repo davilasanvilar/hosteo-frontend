@@ -3,6 +3,7 @@ import { Card, Page, TableStructure } from '../../types/types';
 import { ComponentType } from 'react';
 import { BaseEntity } from '../../types/entities';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
+import styles from '../styles/DataTable.module.css';
 
 interface DataTableProps<T extends BaseEntity> {
     cardViewMode: boolean;
@@ -36,9 +37,9 @@ export function DataTable<T extends BaseEntity>({
             <CardComponent
                 key={item.id}
                 item={item}
-                onClick={() => onClick && onClick(item.id)}
-                onDelete={() => onDelete && onDelete(item.id)}
-                onEdit={() => onEdit && onEdit(item.id)}
+                onClick={onClick}
+                onDelete={onDelete}
+                onEdit={onEdit}
             />
         ));
 
@@ -82,7 +83,7 @@ export function DataTable<T extends BaseEntity>({
                 <Table.Tbody>
                     <Table.Tr
                         key={item.id}
-                        // className={styles.selectableTr}
+                        className={styles.selectableTr}
                         onClick={() => {
                             onClick && onClick(item.id);
                         }}

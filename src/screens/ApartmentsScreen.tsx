@@ -1,4 +1,11 @@
-import { Button, MultiSelect, Switch, Text, TextInput } from '@mantine/core';
+import {
+    Button,
+    MultiSelect,
+    Switch,
+    Text,
+    TextInput,
+    Title
+} from '@mantine/core';
 import { Layout } from '../components/organism/layout/Layout';
 import { ApartmentForm } from '../components/modals/ApartmentForm';
 import { useEffect, useState } from 'react';
@@ -25,6 +32,9 @@ import { ApartmentDetails } from '../components/modals/ApartmentDetails';
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
 import { useConfirmModal } from '../hooks/useConfirmModal';
+import { useEntityModal } from '../components/molecules/EntityModal';
+import { ApartmentFormSkeleton } from '../components/skeletons/ApartmentFormSkeleton';
+import { ApartmentDetailsSkeleton } from '../components/skeletons/ApartmentDetailsSkeleton';
 
 const tableStructure: TableStructure<Apartment> = {
     headers: [
@@ -66,7 +76,6 @@ const tableStructure: TableStructure<Apartment> = {
 };
 
 export function ApartmentsScreen() {
-    const [opened, setOpened] = useState(false);
     const { search, remove } = useCrud<Apartment>('apartment');
     const { handleError } = useError();
     const { isTablet } = useScreen();
@@ -77,12 +86,6 @@ export function ApartmentsScreen() {
     const [debouncedNameSearch, setDebouncedNameSearch] = useState<string>('');
     const [stateSearch, setStateSearch] = useState<string[]>([]);
     const [cardViewMode, setCardViewMode] = useState<boolean>(false);
-    const [apartmentToEditId, setApartmentToEditId] = useState<
-        string | undefined
-    >(undefined);
-    const [apartmentDetailsOpenedId, setApartmentDetailsOpenedId] = useState<
-        string | undefined
-    >(undefined);
 
     const {
         data: apartmentPage,
@@ -103,25 +106,44 @@ export function ApartmentsScreen() {
         retry: false
     });
 
-    const { get } = useCrud<Apartment>('apartment');
-
-    const { data: apartmentToEdit } = useQuery({
-        queryKey: ['apartment', apartmentToEditId],
-        queryFn: () => (apartmentToEditId ? get(apartmentToEditId) : undefined),
-        enabled: !!apartmentToEditId
-    });
-
-    useEffect(() => {
-        if (apartmentToEdit) {
-            setOpened(true);
-        }
-    }, [apartmentToEdit]);
-
     useEffect(() => {
         if (isError) {
             handleError(error);
         }
     }, [isError, error]);
+
+    const { onOpen: onOpenFormModal, modalComponent: apartmentFormModal } =
+        useEntityModal<Apartment>({
+            entityName: 'apartment',
+            queryKey: 'apartments',
+            ModalBodyComponent: ApartmentForm,
+            ModalBodySkeleton: ApartmentFormSkeleton
+        });
+
+    const {
+        onOpen: onOpenDetailsModal,
+        modalComponent: apartmentDetailsModal
+    } = useEntityModal<Apartment>({
+        entityName: 'apartment',
+        queryKey: 'apartments',
+        title: (apartment) => {
+            if (!apartment) return '';
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '1rem',
+                        alignItems: 'center'
+                    }}
+                >
+                    <Title order={4}>{apartment.name}</Title>
+                    <ApartmentStateBadge state={apartment.state} />
+                </div>
+            );
+        },
+        ModalBodyComponent: ApartmentDetails,
+        ModalBodySkeleton: ApartmentDetailsSkeleton
+    });
 
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedNameSearch(nameSearch), 500);
@@ -202,7 +224,7 @@ export function ApartmentsScreen() {
                 addButton={
                     <Button
                         leftSection={<IconPlus />}
-                        onClick={() => setOpened(true)}
+                        onClick={() => onOpenFormModal()}
                     >
                         {'Add apartment'}
                     </Button>
@@ -218,24 +240,12 @@ export function ApartmentsScreen() {
                 page={apartmentPage!}
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}
-                onClick={(id) => setApartmentDetailsOpenedId(id)}
-                onEdit={(id) => setApartmentToEditId(id)}
+                onClick={(id) => onOpenDetailsModal(id)}
+                onEdit={(id) => onOpenFormModal(id)}
                 onDelete={(id) => openDeleteModal(id)}
             />
-            <ApartmentForm
-                opened={opened}
-                onClose={() => {
-                    setOpened(false);
-                    setApartmentToEditId(undefined);
-                }}
-                apartment={apartmentToEdit}
-            />
-            {apartmentDetailsOpenedId && (
-                <ApartmentDetails
-                    onClose={() => setApartmentDetailsOpenedId(undefined)}
-                    apartmentId={apartmentDetailsOpenedId}
-                />
-            )}
+            {apartmentFormModal}
+            {apartmentDetailsModal}
         </Layout>
     );
 }

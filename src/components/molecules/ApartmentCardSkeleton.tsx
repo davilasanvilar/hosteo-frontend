@@ -1,9 +1,8 @@
 import { Card, Skeleton } from '@mantine/core';
-import styles from './ApartmentCard.module.css';
 
 export function ApartmentCardSkeleton() {
     return (
-        <Card w={'100%'} miw={'20rem'} h={'18rem'} className={styles.card}>
+        <Card w={'100%'} miw={'20rem'} h={'18rem'}>
             <Card.Section>
                 <Skeleton height={160} />
             </Card.Section>

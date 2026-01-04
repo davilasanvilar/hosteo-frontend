@@ -33,6 +33,15 @@ export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [confirmModalProperties]);
 
+    const onClose = () => {
+        setOpened(false);
+    };
+
+    const onConfirmAndClose = () => {
+        onConfirm && onConfirm();
+        onClose();
+    };
+
     const { title, message, color, onConfirm } = confirmModalProperties || {};
 
     return (
@@ -40,19 +49,18 @@ export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
             <Modal
                 title={title}
                 opened={opened}
-                onClose={() => setOpened(false)}
+                onClose={onClose}
+                transitionProps={{
+                    onExited: () => setConfirmModalProperties(undefined)
+                }}
             >
                 {message}
                 <ModalButtons>
-                    <Button
-                        onClick={() => setConfirmModalProperties(undefined)}
-                        color={color}
-                        variant="outline"
-                    >
+                    <Button onClick={onClose} color={color} variant="outline">
                         Cancel
                     </Button>
                     <Button
-                        onClick={() => onConfirm && onConfirm()}
+                        onClick={onConfirmAndClose}
                         color={color}
                         variant="filled"
                     >

@@ -1,4 +1,4 @@
-import { Button, Modal, Select, TextInput } from '@mantine/core';
+import { Button, Select, TextInput } from '@mantine/core';
 import { Apartment } from '../../types/entities';
 import { useEffect, useState } from 'react';
 import { notEmptyValidator, useValidator } from '../../hooks/useValidator';
@@ -19,13 +19,11 @@ import { useScreen } from '../../hooks/useScreen';
 import { ModalButtons } from '../molecules/ModalButtons';
 
 export function ApartmentForm({
-    opened,
     onClose,
-    apartment
+    entity: apartment
 }: {
-    opened: boolean;
-    onClose: () => void;
-    apartment?: Apartment;
+    onClose?: () => void;
+    entity?: Apartment;
 }) {
     const { queryClient } = useReactQuery();
     const { handleError } = useError();
@@ -34,7 +32,9 @@ export function ApartmentForm({
     );
 
     useEffect(() => {
-        setFormFields(apartmentToForm(apartment));
+        if (apartment) {
+            setFormFields(apartmentToForm(apartment));
+        }
     }, [apartment]);
 
     const [nameDirty, nameError, nameMessage, nameValidate, setDirtyName] =
@@ -56,7 +56,7 @@ export function ApartmentForm({
                     queryKey: ['apartments']
                 });
                 showNotificationSuccess('Apartment created');
-                onClose();
+                onClose?.();
             },
             onError: (e) => handleError(e)
         });
@@ -73,7 +73,7 @@ export function ApartmentForm({
                     queryKey: ['apartments']
                 });
                 showNotificationSuccess('Apartment updated');
-                onClose();
+                onClose?.();
             },
             onError: (e) => handleError(e)
         });
@@ -91,136 +91,111 @@ export function ApartmentForm({
     const disabledButton = isLoadingCreate || isLoadingUpdate || nameError;
 
     return (
-        <Modal
-            keepMounted={false}
-            opened={opened}
-            onClose={onClose}
-            size={'lg'}
-            title={apartment ? 'Edit apartment' : 'New apartment'}
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                onSubmit();
+            }}
         >
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    onSubmit();
-                }}
-            >
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <TextInput
-                        style={{ width: '100%' }}
-                        label="Name"
-                        variant="filled"
-                        value={formFields.name}
-                        onBlur={() => setDirtyName()}
-                        onChange={(e) =>
-                            setFormFields({
-                                ...formFields,
-                                name: e.target.value
-                            })
-                        }
-                        withAsterisk
-                        error={nameError && nameDirty ? nameMessage : undefined}
-                    />
+            <div style={{ display: 'flex', gap: '1rem' }}>
+                <TextInput
+                    label="Name"
+                    variant="filled"
+                    value={formFields.name}
+                    onBlur={() => setDirtyName()}
+                    onChange={(e) =>
+                        setFormFields({
+                            ...formFields,
+                            name: e.target.value
+                        })
+                    }
+                    withAsterisk
+                    error={nameError && nameDirty ? nameMessage : undefined}
+                />
 
-                    {apartment && (
-                        <Select
-                            style={{ maxWidth: '8rem' }}
-                            label="State"
-                            variant="filled"
-                            value={formFields.state}
-                            renderOption={(option) => (
-                                <ApartmentStateBadge
-                                    state={
-                                        option.option.value as ApartmentState
-                                    }
-                                />
-                            )}
-                            onChange={(value) =>
-                                setFormFields({
-                                    ...formFields,
-                                    state: value as ApartmentState
-                                })
-                            }
-                            data={Object.values(ApartmentState)}
-                        />
-                    )}
-                </div>
+                {apartment && (
+                    <Select
+                        style={{ maxWidth: '8rem' }}
+                        label="State"
+                        variant="filled"
+                        value={formFields.state}
+                        renderOption={(option) => (
+                            <ApartmentStateBadge
+                                state={option.option.value as ApartmentState}
+                            />
+                        )}
+                        onChange={(value) =>
+                            setFormFields({
+                                ...formFields,
+                                state: value as ApartmentState
+                            })
+                        }
+                        data={Object.values(ApartmentState)}
+                    />
+                )}
+            </div>
 
+            <TextInput
+                label="Airbnb ID"
+                variant="filled"
+                value={formFields.airbnbId}
+                onChange={(e) =>
+                    setFormFields({
+                        ...formFields,
+                        airbnbId: e.target.value
+                    })
+                }
+            />
+            <TextInput
+                label="Booking ID"
+                variant="filled"
+                value={formFields.bookingId}
+                onChange={(e) =>
+                    setFormFields({
+                        ...formFields,
+                        bookingId: e.target.value
+                    })
+                }
+            />
+            <TextInput
+                label="Street"
+                variant="filled"
+                value={formFields.street}
+                onChange={(e) =>
+                    setFormFields({
+                        ...formFields,
+                        street: e.target.value
+                    })
+                }
+            />
+            <div style={{ display: 'flex', gap: '1rem' }}>
                 <TextInput
-                    label="Airbnb ID"
+                    w={isTablet ? '20%' : '30%'}
+                    label="Zip code"
                     variant="filled"
-                    value={formFields.airbnbId}
+                    value={formFields.zipCode}
                     onChange={(e) =>
                         setFormFields({
                             ...formFields,
-                            airbnbId: e.target.value
+                            zipCode: e.target.value
                         })
                     }
                 />
                 <TextInput
-                    label="Booking ID"
+                    w={isTablet ? '40%' : '70%'}
+                    label="City"
                     variant="filled"
-                    value={formFields.bookingId}
+                    value={formFields.city}
                     onChange={(e) =>
                         setFormFields({
                             ...formFields,
-                            bookingId: e.target.value
+                            city: e.target.value
                         })
                     }
                 />
-                <TextInput
-                    label="Street"
-                    variant="filled"
-                    value={formFields.street}
-                    onChange={(e) =>
-                        setFormFields({
-                            ...formFields,
-                            street: e.target.value
-                        })
-                    }
-                />
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                {isTablet && (
                     <TextInput
-                        w={isTablet ? '20%' : '30%'}
-                        label="Zip code"
-                        variant="filled"
-                        value={formFields.zipCode}
-                        onChange={(e) =>
-                            setFormFields({
-                                ...formFields,
-                                zipCode: e.target.value
-                            })
-                        }
-                    />
-                    <TextInput
-                        w={isTablet ? '40%' : '70%'}
-                        label="City"
-                        variant="filled"
-                        value={formFields.city}
-                        onChange={(e) =>
-                            setFormFields({
-                                ...formFields,
-                                city: e.target.value
-                            })
-                        }
-                    />
-                    {isTablet && (
-                        <TextInput
-                            w={'40%'}
-                            label="Country"
-                            variant="filled"
-                            value={formFields.country}
-                            onChange={(e) =>
-                                setFormFields({
-                                    ...formFields,
-                                    country: e.target.value
-                                })
-                            }
-                        />
-                    )}
-                </div>
-                {!isTablet && (
-                    <TextInput
-                        w={'100%'}
+                        w={'40%'}
                         label="Country"
                         variant="filled"
                         value={formFields.country}
@@ -232,19 +207,33 @@ export function ApartmentForm({
                         }
                     />
                 )}
-                <ModalButtons>
-                    <Button variant="outline" onClick={onClose}>
-                        Cancel
-                    </Button>
-                    <Button
-                        disabled={disabledButton}
-                        type="submit"
-                        loading={isLoadingCreate || isLoadingUpdate}
-                    >
-                        {apartment ? 'Update' : 'Create'}
-                    </Button>
-                </ModalButtons>
-            </form>
-        </Modal>
+            </div>
+            {!isTablet && (
+                <TextInput
+                    w={'100%'}
+                    label="Country"
+                    variant="filled"
+                    value={formFields.country}
+                    onChange={(e) =>
+                        setFormFields({
+                            ...formFields,
+                            country: e.target.value
+                        })
+                    }
+                />
+            )}
+            <ModalButtons>
+                <Button variant="outline" onClick={onClose}>
+                    Cancel
+                </Button>
+                <Button
+                    disabled={disabledButton}
+                    type="submit"
+                    loading={isLoadingCreate || isLoadingUpdate}
+                >
+                    {apartment ? 'Update' : 'Create'}
+                </Button>
+            </ModalButtons>
+        </form>
     );
 }

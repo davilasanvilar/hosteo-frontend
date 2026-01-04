@@ -5,3 +5,11 @@
 .selectableTr:hover {
     backdrop-filter: brightness(0.98);
 }
+
+.selectableCard {
+    cursor: pointer;
+}
+
+.selectableCard:hover {
+    opacity: 0.8;
+}

@@ -2,8 +2,9 @@ import { Apartment } from '../../types/entities';
 import { ActionIcon, Card, Image, Text, Title } from '@mantine/core';
 import { ApartmentStateBadge } from '../atoms/ApartmentStateBadge';
 import { addressToString } from '../../utils/utilFunctions';
-import styles from './ApartmentCard.module.css';
+import styles from '../styles/DataTable.module.css';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { CardControls } from '../atoms/CardControls';
 
 export function ApartmentCard({
     item,
@@ -12,17 +13,17 @@ export function ApartmentCard({
     onDelete
 }: {
     item: Apartment;
-    onClick?: () => void;
-    onEdit?: () => void;
-    onDelete?: () => void;
+    onClick?: (id: string) => void;
+    onEdit?: (id: string) => void;
+    onDelete?: (id: string) => void;
 }) {
     return (
         <Card
             w={'100%'}
             miw={'20rem'}
             h={'18rem'}
-            className={styles.card}
-            onClick={onClick}
+            className={onClick ? styles.selectableCard : undefined}
+            onClick={onClick && (() => onClick(item.id))}
         >
             <Card.Section>
                 <Image
@@ -58,32 +59,10 @@ export function ApartmentCard({
                     <Text c="dimmed" size="sm">
                         {addressToString(item.address)}
                     </Text>
-                    <div
-                        style={{
-                            gap: '0.5rem',
-                            display: 'flex'
-                        }}
-                    >
-                        <ActionIcon
-                            variant="transparent"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onEdit?.();
-                            }}
-                        >
-                            <IconEdit />
-                        </ActionIcon>
-                        <ActionIcon
-                            variant="transparent"
-                            color="error"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDelete?.();
-                            }}
-                        >
-                            <IconTrash />
-                        </ActionIcon>
-                    </div>
+                    <CardControls
+                        onEdit={onEdit && (() => onEdit(item.id))}
+                        onDelete={onDelete && (() => onDelete(item.id))}
+                    />
                 </div>
             </Card.Section>
         </Card>
