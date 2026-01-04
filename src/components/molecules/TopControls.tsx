@@ -51,15 +51,17 @@ export function TopControls({
                     alignItems: 'center'
                 }}
             >
-                <Indicator disabled={!filtersOnModalActivated}>
-                    <ActionIcon
-                        variant="light"
-                        size="lg"
-                        onClick={() => setFiltersOpened(true)}
-                    >
-                        <IconFilter />
-                    </ActionIcon>
-                </Indicator>
+                {filters && (
+                    <Indicator disabled={!filtersOnModalActivated}>
+                        <ActionIcon
+                            variant="light"
+                            size="lg"
+                            onClick={() => setFiltersOpened(true)}
+                        >
+                            <IconFilter />
+                        </ActionIcon>
+                    </Indicator>
+                )}
                 {keywordFilter}
             </div>
             {!isTablet && filtersOpened && (

@@ -17,6 +17,12 @@ const LazyApartmentsScreen = lazy(() =>
     }))
 );
 
+const LazyWorkersScreen = lazy(() =>
+    import('./screens/WorkersScreen').then((module) => ({
+        default: module.WorkersScreen
+    }))
+);
+
 function Body() {
     const authInfo = useAuth();
 
@@ -45,6 +51,14 @@ function Body() {
                         element={
                             <Suspense fallback={<LoadingScreen />}>
                                 <LazyApartmentsScreen />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/workers"
+                        element={
+                            <Suspense fallback={<LoadingScreen />}>
+                                <LazyWorkersScreen />
                             </Suspense>
                         }
                     />

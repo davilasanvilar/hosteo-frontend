@@ -5,6 +5,11 @@ export enum BookingState {
     CANCELLED = 'CANCELLED'
 }
 
+export enum WorkerState {
+    AVAILABLE = 'AVAILABLE',
+    AWAY = 'AWAY',
+}
+
 export enum BookingSource {
     AIRBNB = 'AIRBNB',
     BOOKING = 'BOOKING',

@@ -8,6 +8,7 @@ import styles from '../styles/DataTable.module.css';
 interface DataTableProps<T extends BaseEntity> {
     cardViewMode: boolean;
     CardComponent: ComponentType<Card<T>>;
+    cardMinWidth?: string;
     SkeletonComponent?: ComponentType;
     tableStructure: TableStructure<T>;
     isLoading: boolean;
@@ -22,6 +23,7 @@ interface DataTableProps<T extends BaseEntity> {
 export function DataTable<T extends BaseEntity>({
     cardViewMode,
     CardComponent,
+    cardMinWidth,
     SkeletonComponent,
     tableStructure,
     isLoading,
@@ -135,7 +137,9 @@ export function DataTable<T extends BaseEntity>({
                         style={{
                             display: 'grid',
                             gridTemplateColumns:
-                                'repeat(auto-fill, minmax(20rem,1fr))',
+                                'repeat(auto-fill, minmax(' +
+                                (cardMinWidth || '20rem') +
+                                ',1fr))',
                             justifyItems: 'center',
                             gap: '1rem',
                             rowGap: '2rem'

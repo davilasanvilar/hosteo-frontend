@@ -5,7 +5,8 @@ import {
     BookingSource,
     BookingState,
     CategoryEnum,
-    Language
+    Language,
+    WorkerState
 } from './enums';
 
 export interface Address {
@@ -70,6 +71,7 @@ export interface Worker extends BaseEntity {
     language: Language;
     salary: number;
     visible: boolean;
+    state: WorkerState;
 }
 
 export interface Assignment extends BaseEntity {

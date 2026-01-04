@@ -115,7 +115,7 @@ export function ApartmentsScreen() {
     const { onOpen: onOpenFormModal, modalComponent: apartmentFormModal } =
         useEntityModal<Apartment>({
             entityName: 'apartment',
-            queryKey: 'apartments',
+            queryKey: 'apartmentToEdit',
             ModalBodyComponent: ApartmentForm,
             ModalBodySkeleton: ApartmentFormSkeleton
         });
@@ -125,7 +125,7 @@ export function ApartmentsScreen() {
         modalComponent: apartmentDetailsModal
     } = useEntityModal<Apartment>({
         entityName: 'apartment',
-        queryKey: 'apartments',
+        queryKey: 'apartmentToView',
         title: (apartment) => {
             if (!apartment) return '';
             return (
@@ -240,9 +240,9 @@ export function ApartmentsScreen() {
                 page={apartmentPage!}
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}
-                onClick={(id) => onOpenDetailsModal(id)}
-                onEdit={(id) => onOpenFormModal(id)}
-                onDelete={(id) => openDeleteModal(id)}
+                onClick={onOpenDetailsModal}
+                onEdit={onOpenFormModal}
+                onDelete={openDeleteModal}
             />
             {apartmentFormModal}
             {apartmentDetailsModal}

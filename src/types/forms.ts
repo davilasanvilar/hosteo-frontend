@@ -5,8 +5,10 @@ import {
     BookingSource,
     BookingState,
     CategoryEnum,
-    Language
+    Language,
+    WorkerState
 } from './enums';
+import { Worker } from './entities';
 
 export interface LoginResponse {
     authToken: string;
@@ -139,6 +141,7 @@ export interface WorkerCreateForm {
     language: Language;
     salary: number;
     visible: boolean;
+    state: WorkerState;
 }
 
 
@@ -174,6 +177,7 @@ export interface WorkerUpdateForm {
     language: Language;
     salary: number;
     visible: boolean;
+    state: WorkerState;
 }
 
 export interface AssignmentUpdateForm {
@@ -182,4 +186,54 @@ export interface AssignmentUpdateForm {
     endDate: Date;
     workerId: string;
     state: AssignmentState;
+}
+
+export const workerToForm = (worker: Worker | undefined): WorkerFormFields => {
+    if (!worker) {
+        return {
+            name: '',
+            language: Language.EN,
+            salary: 0,
+            state: WorkerState.AVAILABLE
+        };
+    }
+    return {
+        id: worker.id,
+        name: worker.name,
+        language: worker.language,
+        salary: worker.salary,
+        state: worker.state
+    };
+};
+
+export const formFieldsToCreateWorkerForm = (formFields: WorkerFormFields): WorkerCreateForm => {
+    return {
+        name: formFields.name,
+        language: formFields.language,
+        salary: formFields.salary,
+        state: formFields.state,
+        visible: true
+    };
+};
+
+export const formFieldsToUpdateWorkerForm = (formFields: WorkerFormFields): WorkerUpdateForm => {
+    if (!formFields.id) {
+        throw new Error('Id is required');
+    }
+    return {
+        id: formFields.id,
+        name: formFields.name,
+        language: formFields.language,
+        salary: formFields.salary,
+        state: formFields.state,
+        visible: true
+    };
+};
+
+export interface WorkerFormFields {
+    id?: string;
+    name: string;
+    language: Language;
+    salary: number;
+    state: WorkerState;
 }

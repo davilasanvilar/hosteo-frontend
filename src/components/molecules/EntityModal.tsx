@@ -36,6 +36,7 @@ export function EntityModal({
 
 interface EntityModalBodyProps<T extends BaseEntity> {
     entity?: T;
+    onClose?: () => void;
 }
 
 interface UseEntityModalProps<T extends BaseEntity> {
@@ -99,7 +100,10 @@ export const useEntityModal = <T extends BaseEntity>({
                 {isLoading && entityId ? (
                     <ModalBodySkeleton />
                 ) : (
-                    <ModalBodyComponent entity={entity} />
+                    <ModalBodyComponent
+                        onClose={onCloseModal}
+                        entity={entity}
+                    />
                 )}
             </EntityModal>
         )
