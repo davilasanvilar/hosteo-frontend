@@ -9,7 +9,7 @@ interface TopControlsProps {
     filters?: React.ReactNode;
     cardViewModeComponent?: React.ReactNode;
     addButton?: React.ReactNode;
-    filtersOnModalActivated: boolean;
+    filtersOnModalActivated?: boolean;
 }
 
 export function TopControls({
@@ -24,10 +24,28 @@ export function TopControls({
 
     return isTablet ? (
         <section
-            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem'
+            }}
         >
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '1rem',
+                    flexWrap: 'wrap-reverse'
+                }}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '1rem',
+                        flex: 1
+                    }}
+                >
                     {keywordFilter}
                     {filters}
                 </div>

@@ -11,9 +11,9 @@ export enum WorkerState {
 }
 
 export enum BookingSource {
+    NONE = 'NONE',
     AIRBNB = 'AIRBNB',
     BOOKING = 'BOOKING',
-    NONE = 'NONE'
 }
 
 export enum CategoryEnum {

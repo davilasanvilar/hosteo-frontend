@@ -85,7 +85,7 @@ export function ApartmentsScreen() {
     const [nameSearch, setNameSearch] = useState<string>('');
     const [debouncedNameSearch, setDebouncedNameSearch] = useState<string>('');
     const [stateSearch, setStateSearch] = useState<string[]>([]);
-    const [cardViewMode, setCardViewMode] = useState<boolean>(false);
+    const [cardViewMode, setCardViewMode] = useState<boolean>(true);
 
     const {
         data: apartmentPage,
@@ -179,6 +179,9 @@ export function ApartmentsScreen() {
                 keywordFilter={
                     <TextInput
                         variant="outlined"
+                        style={{
+                            width: isTablet ? '15rem' : '100%'
+                        }}
                         value={nameSearch}
                         placeholder={isTablet ? undefined : 'Search by name'}
                         onChange={(e) => {
@@ -198,7 +201,7 @@ export function ApartmentsScreen() {
                             setStateSearch(e);
                         }}
                         style={{
-                            minWidth: '8rem',
+                            minWidth: isTablet ? '8rem' : 'auto',
                             width: isTablet ? 'auto' : '100%'
                         }}
                         hidePickedOptions

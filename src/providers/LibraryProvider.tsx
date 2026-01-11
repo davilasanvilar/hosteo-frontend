@@ -10,6 +10,8 @@ import {
     Modal,
     MultiSelect,
     Pagination,
+    Radio,
+    RadioGroup,
     Switch,
     Table,
     TextInput
@@ -98,11 +100,21 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                     }
                 }),
                 Select: Select.extend({
+                    styles: {
+                        root: {
+                            width: '100%'
+                        }
+                    },
                     defaultProps: {
                         size: defaultSize
                     }
                 }),
                 MultiSelect: MultiSelect.extend({
+                    styles: {
+                        root: {
+                            width: '100%'
+                        }
+                    },
                     defaultProps: {
                         size: defaultSize
                     }
@@ -128,11 +140,13 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                 }),
                 TextInput: TextInput.extend({
                     defaultProps: {
-                        w: '100%',
                         size: defaultSize,
                         radius: 'md' // You can also default the rounded corners while you're at it!
                     },
                     styles: {
+                        root: {
+                            width: '100%'
+                        },
                         wrapper: {
                             minHeight: '1rem',
                             marginBottom: '0.4rem'
@@ -157,6 +171,19 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                         size: defaultSize
                     }
                 }),
+                Radio: Radio.extend({
+                    styles: {
+                        body: {
+                            alignItems: 'center'
+                        },
+                        label: {
+                            paddingLeft: '0.3rem'
+                        }
+                    },
+                    defaultProps: {
+                        size: defaultSize
+                    }
+                }),
                 Badge: Badge.extend({
                     defaultProps: {
                         size: defaultSize
@@ -169,6 +196,7 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                 }),
                 Switch: Switch.extend({
                     defaultProps: {
+                        w: 'fit-content',
                         size: isTablet ? 'sm' : 'lg'
                     }
                 }),

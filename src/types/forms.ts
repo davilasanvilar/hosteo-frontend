@@ -1,4 +1,4 @@
-import { Address, Apartment } from './entities';
+import { Address, Apartment, Booking } from './entities';
 import {
     ApartmentState,
     AssignmentState,
@@ -9,6 +9,8 @@ import {
     WorkerState
 } from './enums';
 import { Worker } from './entities';
+import dayjs from 'dayjs';
+import { conf } from '../../conf';
 
 export interface LoginResponse {
     authToken: string;
@@ -46,7 +48,7 @@ export const apartmentToForm = (apartment: Apartment | undefined): ApartmentForm
     }
 }
 
-export const formFieldsToCreateForm = (formFields: ApartmentFormFields): ApartmentCreateForm => {
+export const formFieldsToCreateApartmentForm = (formFields: ApartmentFormFields): ApartmentCreateForm => {
     return {
         name: formFields.name,
         airbnbId: formFields.airbnbId || undefined,
@@ -61,7 +63,7 @@ export const formFieldsToCreateForm = (formFields: ApartmentFormFields): Apartme
     }
 }
 
-export const formFieldsToUpdateForm = (formFields: ApartmentFormFields): ApartmentUpdateForm => {
+export const formFieldsToUpdateApartmentForm = (formFields: ApartmentFormFields): ApartmentUpdateForm => {
     if (!formFields.id) {
         throw new Error('Id is required');
     }
@@ -111,14 +113,82 @@ export interface ApartmentUpdateForm {
     state: ApartmentState
 }
 
+
 export interface BookingCreateForm {
     apartmentId: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: number;
+    endDate: number;
     name: string;
     state: BookingState;
     source: BookingSource;
 }
+
+export interface BookingUpdateForm {
+    id: string;
+    startDate: number;
+    endDate: number;
+    name: string;
+    state: BookingState;
+    source: BookingSource;
+}
+
+export interface BookingFormFields {
+    id?: string;
+    apartmentId?: string;
+    startDate: string;
+    endDate: string;
+    name: string;
+    state: BookingState;
+    source: BookingSource;
+}
+
+
+
+export const bookingToForm = (booking: Booking | undefined): BookingFormFields => {
+    if (!booking) {
+        return {
+            name: '',
+            startDate: '',
+            endDate: '',
+            state: BookingState.PENDING,
+            source: BookingSource.NONE,
+        };
+    }
+    return {
+        id: booking.id,
+        name: booking.name,
+        startDate: dayjs.unix(booking.startDate).format(conf.dateInputFormat),
+        endDate: dayjs.unix(booking.endDate).format(conf.dateInputFormat),
+        state: booking.state,
+        source: booking.source,
+    };
+};
+
+export const formFieldsToCreateBookingForm = (formFields: BookingFormFields): BookingCreateForm => {
+    console.log(formFields.startDate)
+    return {
+        apartmentId: formFields.apartmentId!,
+        startDate: dayjs(formFields.startDate, conf.dateInputFormat).unix(),
+        endDate: dayjs(formFields.endDate, conf.dateInputFormat).unix(),
+        name: formFields.name,
+        state: formFields.state,
+        source: formFields.source,
+    };
+};
+
+export const formFieldsToUpdateBookingForm = (formFields: BookingFormFields): BookingUpdateForm => {
+    if (!formFields.id) {
+        throw new Error('Id is required');
+    }
+    return {
+        id: formFields.id,
+        name: formFields.name,
+        state: formFields.state,
+        source: formFields.source,
+        startDate: dayjs(formFields.startDate, conf.dateInputFormat).unix(),
+        endDate: dayjs(formFields.endDate, conf.dateInputFormat).unix(),
+    };
+};
 
 export interface TaskCreateForm {
     apartmentId: string;
@@ -136,23 +206,8 @@ export interface TemplateCreateForm {
     steps: string[];
 }
 
-export interface WorkerCreateForm {
-    name: string;
-    language: Language;
-    salary: number;
-    visible: boolean;
-    state: WorkerState;
-}
 
 
-export interface BookingUpdateForm {
-    id: string;
-    startDate: Date;
-    endDate: Date;
-    name: string;
-    state: BookingState;
-    source: BookingSource;
-}
 
 export interface TaskUpdateForm {
     id: string;
@@ -171,6 +226,24 @@ export interface TemplateUpdateForm {
     steps: string[];
 }
 
+
+
+export interface AssignmentUpdateForm {
+    id: string;
+    startDate: Date;
+    endDate: Date;
+    workerId: string;
+    state: AssignmentState;
+}
+
+export interface WorkerCreateForm {
+    name: string;
+    language: Language;
+    salary: number;
+    visible: boolean;
+    state: WorkerState;
+}
+
 export interface WorkerUpdateForm {
     id: string;
     name: string;
@@ -180,13 +253,14 @@ export interface WorkerUpdateForm {
     state: WorkerState;
 }
 
-export interface AssignmentUpdateForm {
-    id: string;
-    startDate: Date;
-    endDate: Date;
-    workerId: string;
-    state: AssignmentState;
+export interface WorkerFormFields {
+    id?: string;
+    name: string;
+    language: Language;
+    salary: number;
+    state: WorkerState;
 }
+
 
 export const workerToForm = (worker: Worker | undefined): WorkerFormFields => {
     if (!worker) {
@@ -230,10 +304,3 @@ export const formFieldsToUpdateWorkerForm = (formFields: WorkerFormFields): Work
     };
 };
 
-export interface WorkerFormFields {
-    id?: string;
-    name: string;
-    language: Language;
-    salary: number;
-    state: WorkerState;
-}

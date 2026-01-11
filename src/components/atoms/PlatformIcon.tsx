@@ -1,13 +1,17 @@
-import { IconBrandAirbnb, IconBrandBooking } from '@tabler/icons-react';
+import {
+    IconBan,
+    IconBrandAirbnb,
+    IconBrandBooking
+} from '@tabler/icons-react';
 
 export function PlatformIcon({
     platform,
     size = 16
 }: {
-    platform: 'airbnb' | 'booking';
+    platform: string;
     size?: number;
 }) {
-    switch (platform) {
+    switch (platform.toLowerCase()) {
         case 'airbnb':
             return (
                 <IconBrandAirbnb
@@ -21,6 +25,14 @@ export function PlatformIcon({
                 <IconBrandBooking
                     size={size}
                     color="#2E4A8A"
+                    style={{ verticalAlign: 'middle' }}
+                />
+            );
+        default:
+            return (
+                <IconBan
+                    size={size}
+                    color="black"
                     style={{ verticalAlign: 'middle' }}
                 />
             );

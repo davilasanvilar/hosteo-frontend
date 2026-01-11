@@ -108,7 +108,6 @@ export function WorkersScreen() {
                         {'Add worker'}
                     </Button>
                 }
-                filtersOnModalActivated={false}
             />
             <DataTable
                 cardViewMode={true}

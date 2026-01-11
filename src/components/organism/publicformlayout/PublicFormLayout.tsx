@@ -1,7 +1,6 @@
 import logo from '/logo.svg';
 import styles from './PublicFormLayout.module.css';
 import { Fieldset } from '@mantine/core';
-import { useScreen } from '../../../hooks/useScreen';
 
 export function PublicFormLayout({
     children,
@@ -12,8 +11,6 @@ export function PublicFormLayout({
     onSubmit?: () => void;
     title?: string;
 }) {
-    const { isTablet } = useScreen();
-
     return (
         <section className={styles.container}>
             <div className={styles.logoSection}>

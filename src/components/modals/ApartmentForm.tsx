@@ -5,8 +5,8 @@ import { notEmptyValidator, useValidator } from '../../hooks/useValidator';
 import {
     ApartmentFormFields,
     apartmentToForm,
-    formFieldsToCreateForm,
-    formFieldsToUpdateForm
+    formFieldsToCreateApartmentForm,
+    formFieldsToUpdateApartmentForm
 } from '../../types/forms';
 import { useCrud } from '../../hooks/useCrud';
 import { useMutation } from '@tanstack/react-query';
@@ -45,7 +45,7 @@ export function ApartmentForm({
     const { isTablet } = useScreen();
 
     const createApartment = async () => {
-        await create(formFieldsToCreateForm(formFields));
+        await create(formFieldsToCreateApartmentForm(formFields));
     };
 
     const { mutate: createApartmentMutation, isPending: isLoadingCreate } =
@@ -62,7 +62,7 @@ export function ApartmentForm({
         });
 
     const updateApartment = async () => {
-        await update(formFieldsToUpdateForm(formFields));
+        await update(formFieldsToUpdateApartmentForm(formFields));
     };
 
     const { mutate: updateApartmentMutation, isPending: isLoadingUpdate } =

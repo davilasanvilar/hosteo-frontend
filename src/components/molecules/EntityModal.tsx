@@ -10,6 +10,7 @@ interface EntityModalProps {
     title: React.ReactNode;
     children: React.ReactNode;
     onExited?: () => void;
+    removeHeader?: boolean;
 }
 
 export function EntityModal({
@@ -17,7 +18,8 @@ export function EntityModal({
     onClose,
     title,
     children,
-    onExited
+    onExited,
+    removeHeader
 }: EntityModalProps) {
     return (
         <Modal
@@ -25,9 +27,11 @@ export function EntityModal({
             onClose={onClose}
             size={'lg'}
             title={title}
+            withCloseButton={!removeHeader}
             transitionProps={{
                 onExited: () => onExited?.()
             }}
+            styles={{ body: { maxHeight: '40rem' } }}
         >
             {children}
         </Modal>
@@ -43,6 +47,7 @@ interface UseEntityModalProps<T extends BaseEntity> {
     entityName: string;
     queryKey: string;
     title?: (entity: T | undefined) => React.ReactNode;
+    removeHeader?: boolean;
     ModalBodyComponent: ComponentType<EntityModalBodyProps<T>>;
     ModalBodySkeleton: ComponentType;
 }
@@ -57,6 +62,7 @@ export const useEntityModal = <T extends BaseEntity>({
     entityName,
     queryKey,
     title,
+    removeHeader,
     ModalBodyComponent,
     ModalBodySkeleton
 }: UseEntityModalProps<T>): UseEntityModalReturn => {
@@ -94,8 +100,15 @@ export const useEntityModal = <T extends BaseEntity>({
             <EntityModal
                 opened={opened}
                 onClose={onCloseModal}
-                title={title ? title(entity) : defaultTitle}
+                title={
+                    removeHeader
+                        ? undefined
+                        : title
+                          ? title(entity)
+                          : defaultTitle
+                }
                 onExited={() => setEntityId(undefined)}
+                removeHeader={removeHeader}
             >
                 {isLoading && entityId ? (
                     <ModalBodySkeleton />

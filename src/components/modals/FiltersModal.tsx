@@ -12,8 +12,23 @@ export function FiltersModal({
     children: React.ReactNode;
 }) {
     return (
-        <Modal opened={opened} onClose={onClose} title={title}>
-            <div style={{ display: 'flex', gap: '1rem', flex: 1 }}>
+        <Modal
+            styles={{
+                body: {
+                    justifyContent: 'space-between'
+                }
+            }}
+            opened={opened}
+            onClose={onClose}
+            title={title}
+        >
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '1rem',
+                    flexWrap: 'wrap'
+                }}
+            >
                 {children}
             </div>
             <Button variant="outline" onClick={onClose}>

@@ -84,8 +84,8 @@ export interface Assignment extends BaseEntity {
 
 export interface Booking extends BaseEntity {
     apartment: Apartment;
-    startDate: Date;
-    endDate: Date;
+    startDate: number;
+    endDate: number;
     name: string;
     state: BookingState;
     source: BookingSource;
