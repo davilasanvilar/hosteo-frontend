@@ -123,6 +123,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } = useQuery<User | undefined>({
         queryKey: ['getUserInfo'],
         queryFn: self,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
         retry: false
     });
 
