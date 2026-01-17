@@ -26,14 +26,13 @@ import { BookingCard } from '../components/molecules/BookingCard';
 import { useError } from '../hooks/useError';
 import { BookingState } from '../types/enums';
 import { DataTable } from '../components/organism/DataTable';
-import { ApartmentCardSkeleton } from '../components/molecules/ApartmentCardSkeleton';
 import { BookingFormSkeleton } from '../components/skeletons/BookingFormSkeleton';
 import { BookingDetailsSkeleton } from '../components/skeletons/BookingDetailsSkeleton';
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
 import { useConfirmModal } from '../hooks/useConfirmModal';
 import { useEntityModal } from '../components/molecules/EntityModal';
-import { DatePickerInput, DateTimePicker } from '@mantine/dates';
+import { DatePickerInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { conf } from '../../conf';
 import { PlatformIcon } from '../components/atoms/PlatformIcon';
@@ -142,7 +141,17 @@ export function BookingsScreen() {
                             alignItems: 'center'
                         }}
                     >
-                        <Title order={4}>{booking.name}</Title>
+                        <Title
+                            order={4}
+                            style={{
+                                display: '-webkit-box',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 1,
+                                overflow: 'hidden'
+                            }}
+                        >
+                            {booking.name}
+                        </Title>
                         <BookingStateBadge state={booking.state} />
                     </div>
                 );

@@ -66,7 +66,16 @@ export function BookingCard({
                             height: '100%'
                         }}
                     >
-                        <Title order={4} c="black">
+                        <Title
+                            order={4}
+                            style={{
+                                display: '-webkit-box',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 2,
+                                overflow: 'hidden'
+                            }}
+                            c="black"
+                        >
                             {item.apartment.name}
                         </Title>
                         {/* Wrapper for the badge to ensure it stands out */}
@@ -117,7 +126,17 @@ export function BookingCard({
                         }}
                     >
                         <PlatformIcon platform={item.source} />
-                        <Text fw={500}>{item.name}</Text>
+                        <Text
+                            fw={500}
+                            style={{
+                                display: '-webkit-box',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 1,
+                                overflow: 'hidden'
+                            }}
+                        >
+                            {item.name}
+                        </Text>
                     </div>
                     <CardControls
                         onEdit={onEdit && (() => onEdit(item.id))}
