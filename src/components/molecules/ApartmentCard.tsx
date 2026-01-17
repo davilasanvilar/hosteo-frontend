@@ -43,7 +43,17 @@ export function ApartmentCard({
                 <div
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                    <Title order={4}>{item.name}</Title>
+                    <Title
+                        order={4}
+                        style={{
+                            display: '-webkit-box',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 2,
+                            overflow: 'hidden'
+                        }}
+                    >
+                        {item.name}
+                    </Title>
                     <ApartmentStateBadge state={item.state} />
                 </div>
                 <div
@@ -55,7 +65,16 @@ export function ApartmentCard({
                         height: '100%'
                     }}
                 >
-                    <Text c="dimmed" size="sm">
+                    <Text
+                        style={{
+                            display: '-webkit-box',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 2,
+                            overflow: 'hidden'
+                        }}
+                        c="dimmed"
+                        size="sm"
+                    >
                         {addressToString(item.address)}
                     </Text>
                     <CardControls

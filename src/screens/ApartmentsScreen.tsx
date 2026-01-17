@@ -136,7 +136,17 @@ export function ApartmentsScreen() {
                         alignItems: 'center'
                     }}
                 >
-                    <Title order={4}>{apartment.name}</Title>
+                    <Title
+                        order={4}
+                        style={{
+                            display: '-webkit-box',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 1,
+                            overflow: 'hidden'
+                        }}
+                    >
+                        {apartment.name}
+                    </Title>
                     <ApartmentStateBadge state={apartment.state} />
                 </div>
             );
