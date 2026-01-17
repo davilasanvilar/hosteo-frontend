@@ -1,4 +1,4 @@
-import { Address, Apartment, Booking } from './entities';
+import { Address, Apartment, Booking, Template } from './entities';
 import {
     ApartmentState,
     AssignmentState,
@@ -206,9 +206,6 @@ export interface TemplateCreateForm {
     steps: string[];
 }
 
-
-
-
 export interface TaskUpdateForm {
     id: string;
     name: string;
@@ -222,10 +219,56 @@ export interface TemplateUpdateForm {
     name: string;
     category: CategoryEnum;
     duration: number;
-    extra: boolean;
     steps: string[];
 }
 
+export interface TemplateFormFields {
+    id?: string;
+    name: string;
+    category: CategoryEnum;
+    duration: number;
+    steps: string[];
+}
+
+export const templateToForm = (template: Template | undefined): TemplateFormFields => {
+    if (!template) {
+        return {
+            name: '',
+            category: CategoryEnum.CLEANING,
+            duration: 0,
+            steps: []
+        };
+    }
+    return {
+        id: template.id,
+        name: template.name,
+        category: template.category,
+        duration: template.duration,
+        steps: template.steps
+    };
+};
+
+export const formFieldsToCreateTemplateForm = (formFields: TemplateFormFields): TemplateCreateForm => {
+    return {
+        name: formFields.name,
+        category: formFields.category,
+        duration: formFields.duration,
+        steps: formFields.steps
+    };
+};
+
+export const formFieldsToUpdateTemplateForm = (formFields: TemplateFormFields): TemplateUpdateForm => {
+    if (!formFields.id) {
+        throw new Error('Id is required');
+    }
+    return {
+        id: formFields.id,
+        name: formFields.name,
+        category: formFields.category,
+        duration: formFields.duration,
+        steps: formFields.steps
+    };
+};
 
 
 export interface AssignmentUpdateForm {

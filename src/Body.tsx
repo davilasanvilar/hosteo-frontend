@@ -29,6 +29,12 @@ const LazyBookingsScreen = lazy(() =>
     }))
 );
 
+const LazyTemplatesScreen = lazy(() =>
+    import('./screens/TemplatesScreen').then((module) => ({
+        default: module.TemplatesScreen
+    }))
+);
+
 function Body() {
     const authInfo = useAuth();
 
@@ -73,6 +79,14 @@ function Body() {
                         element={
                             <Suspense fallback={<LoadingScreen />}>
                                 <LazyBookingsScreen />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/templates"
+                        element={
+                            <Suspense fallback={<LoadingScreen />}>
+                                <LazyTemplatesScreen />
                             </Suspense>
                         }
                     />

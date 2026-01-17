@@ -3,16 +3,19 @@ import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 export function CardControls({
     onEdit,
-    onDelete
+    onDelete,
+    flexDirection = 'row'
 }: {
     onEdit?: () => void;
     onDelete?: () => void;
+    flexDirection?: 'row' | 'column';
 }) {
     return onEdit || onDelete ? (
         <div
             style={{
                 gap: '0.5rem',
-                display: 'flex'
+                display: 'flex',
+                flexDirection: flexDirection
             }}
         >
             {onEdit && (
