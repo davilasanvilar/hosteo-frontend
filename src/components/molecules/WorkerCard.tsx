@@ -1,9 +1,9 @@
 import { Worker } from '../../types/entities';
-import { ActionIcon, Card, Image, Text, Title } from '@mantine/core';
+import { Card, Image, Text, Title } from '@mantine/core';
 import { WorkerStateBadge } from '../atoms/WorkerStateBadge';
 import styles from '../styles/DataTable.module.css';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { CardControls } from '../atoms/CardControls';
+import { Flag } from '../atoms/Flag';
 
 export function WorkerCard({
     item,
@@ -39,7 +39,7 @@ export function WorkerCard({
                     paddingBottom: '1rem',
                     flexDirection: 'column',
                     gap: '0.5rem',
-                    height: '100%'
+                    height: '5rem'
                 }}
             >
                 <div
@@ -51,9 +51,18 @@ export function WorkerCard({
                     }}
                 >
                     <Text c="dimmed" size="sm">
-                        {item.language}
+                        <Flag country={item.language} />
                     </Text>
-                    <Title order={4}>{item.name}</Title>
+                    <Title
+                        order={4}
+                        style={{
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis'
+                        }}
+                    >
+                        {item.name}
+                    </Title>
                 </div>
 
                 <div
