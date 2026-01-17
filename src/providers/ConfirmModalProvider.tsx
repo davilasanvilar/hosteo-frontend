@@ -47,6 +47,7 @@ export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
     return (
         <ConfirmModalContext.Provider value={value}>
             <Modal
+                zIndex={1000}
                 title={title}
                 opened={opened}
                 onClose={onClose}
