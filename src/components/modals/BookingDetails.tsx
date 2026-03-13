@@ -41,12 +41,21 @@ export function BookingDetails({ entity: booking }: { entity?: Booking }) {
                 <div
                     style={{
                         display: 'flex',
+                        justifyContent: 'space-between',
                         gap: '0.5rem',
                         alignItems: 'center'
                     }}
                 >
-                    <PlatformIcon platform={booking.source} size={24} />
-                    <Text>{booking.apartment.name}</Text>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.5rem',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <PlatformIcon platform={booking.source} size={24} />
+                        <Text>{booking.apartment.name}</Text>
+                    </div>
                     <ApartmentStateBadge state={booking.apartment.state} />
                 </div>
                 <div

@@ -31,7 +31,7 @@ export function EntityModal({
             transitionProps={{
                 onExited: () => onExited?.()
             }}
-            styles={{ body: { maxHeight: '40rem' } }}
+            styles={{ body: { height: '40rem', overflow: 'hidden' } }}
         >
             {children}
         </Modal>

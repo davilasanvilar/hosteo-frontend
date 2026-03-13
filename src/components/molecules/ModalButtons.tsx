@@ -6,7 +6,7 @@ export function ModalButtons({ children }: { children: React.ReactNode }) {
     return (
         <div
             style={{
-                marginTop: isTablet ? '1rem' : 'auto',
+                marginTop: 'auto',
                 display: 'flex',
                 width: '100%',
                 justifyContent: 'flex-end',

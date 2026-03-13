@@ -63,7 +63,8 @@ export function BookingCard({
                             justifyContent: 'space-between',
                             width: '100%',
                             alignItems: 'center',
-                            height: '100%'
+                            height: '100%',
+                            gap: '0.5rem'
                         }}
                     >
                         <Title
@@ -115,14 +116,16 @@ export function BookingCard({
                     style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        gap: '0.5rem'
                     }}
                 >
                     <div
                         style={{
                             display: 'flex',
                             gap: '0.5rem',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            overflow: 'hidden'
                         }}
                     >
                         <PlatformIcon platform={item.source} />
@@ -132,7 +135,8 @@ export function BookingCard({
                                 display: '-webkit-box',
                                 WebkitBoxOrient: 'vertical',
                                 WebkitLineClamp: 1,
-                                overflow: 'hidden'
+                                overflow: 'hidden',
+                                wordBreak: 'break-all'
                             }}
                         >
                             {item.name}
