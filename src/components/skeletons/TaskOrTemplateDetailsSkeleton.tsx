@@ -1,6 +1,6 @@
 import { Skeleton, Stack } from '@mantine/core';
 
-export function TemplateDetailsSkeleton() {
+export function TaskOrTemplateDetailsSkeleton() {
     return (
         <Stack gap="1rem">
             {Array.from({ length: 3 }).map((_, index) => (

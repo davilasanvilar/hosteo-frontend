@@ -8,10 +8,9 @@ import {
     Textarea,
     TextInput
 } from '@mantine/core';
-import { Template } from '../../types/entities';
+import { Task, Template } from '../../types/entities';
 import { useEffect, useState } from 'react';
-import { IconAlertTriangle, IconPlus } from '@tabler/icons-react';
-import { useConfirmModal } from '../../hooks/useConfirmModal';
+import { IconPlus } from '@tabler/icons-react';
 import { useError } from '../../hooks/useError';
 import { useReactQuery } from '../../hooks/useReactQuery';
 import { useCrud } from '../../hooks/useCrud';
@@ -19,78 +18,118 @@ import { useMutation } from '@tanstack/react-query';
 import { showNotificationSuccess } from '../../utils/notifUtils';
 import { ModalButtons } from '../molecules/ModalButtons';
 import { notEmptyValidator, useValidator } from '../../hooks/useValidator';
-import { CardControls } from '../atoms/CardControls';
 import {
+    TaskFormFields,
     TemplateFormFields,
+    formFieldsToCreateTaskForm,
     formFieldsToCreateTemplateForm,
+    formFieldsToUpdateTaskForm,
     formFieldsToUpdateTemplateForm,
+    taskToForm,
     templateToForm
 } from '../../types/forms';
 import { CategoryEnum } from '../../types/enums';
 import { TaskStep } from '../atoms/TaskStep';
 
-export function TemplateForm({
+export function TaskOrTemplateForm({
     onClose,
-    entity: template
+    entity,
+    relatedEntityId: apartmentId
 }: {
     onClose?: () => void;
-    entity?: Template;
+    entity?: Template | Task;
+    relatedEntityId?: string;
 }) {
-    const { openModal } = useConfirmModal();
     const { handleError } = useError();
     const { queryClient } = useReactQuery();
-    const { create, update } = useCrud<Template>('template');
+    const { create: createTask, update: updateTask } = useCrud<Task>('task');
+    const { create: createTemplate, update: updateTemplate } =
+        useCrud<Template>('template');
 
-    const [formFields, setFormFields] = useState<TemplateFormFields>(
-        templateToForm(template)
-    );
+    const [formFields, setFormFields] = useState<
+        TemplateFormFields | TaskFormFields
+    >(apartmentId ? taskToForm(entity as Task) : templateToForm(entity));
 
-    // Additional state for steps management
-    const [editingStepIndex, setEditingStepIndex] = useState<number | null>(
-        null
-    );
-    const [editingStepValue, setEditingStepValue] = useState<string>('');
     const [newStepValue, setNewStepValue] = useState<string>('');
 
     useEffect(() => {
-        if (template) {
-            setFormFields(templateToForm(template));
+        if (entity) {
+            setFormFields(
+                apartmentId
+                    ? taskToForm(entity as Task)
+                    : templateToForm(entity)
+            );
         }
-    }, [template]);
+    }, [entity]);
 
     const [nameDirty, nameError, nameMessage, nameValidate, setDirtyName] =
         useValidator(formFields.name, [notEmptyValidator]);
 
-    const createTemplate = async () => {
-        await create(formFieldsToCreateTemplateForm(formFields));
+    const createEntity = async () => {
+        if (apartmentId) {
+            await createTask(
+                formFieldsToCreateTaskForm(
+                    formFields as TaskFormFields,
+                    apartmentId
+                )
+            );
+        } else {
+            await createTemplate(
+                formFieldsToCreateTemplateForm(formFields as TemplateFormFields)
+            );
+        }
     };
 
-    const { mutate: createTemplateMutation, isPending: isLoadingCreate } =
+    const { mutate: createEntityMutation, isPending: isLoadingCreate } =
         useMutation({
-            mutationFn: createTemplate,
+            mutationFn: createEntity,
             onSuccess: () => {
-                queryClient.invalidateQueries({
-                    queryKey: ['templates']
-                });
-                showNotificationSuccess('Template created');
+                if (apartmentId) {
+                    queryClient.invalidateQueries({
+                        queryKey: ['apartmentToEdit']
+                    });
+                } else {
+                    queryClient.invalidateQueries({
+                        queryKey: ['templates']
+                    });
+                }
+                showNotificationSuccess(
+                    `${apartmentId ? 'Task' : 'Template'} created`
+                );
                 onClose?.();
             },
             onError: (e) => handleError(e)
         });
 
-    const updateTemplate = async () => {
-        if (!template) return;
-        await update(formFieldsToUpdateTemplateForm(formFields));
+    const updateEntity = async () => {
+        if (!entity) return;
+        if (!apartmentId) {
+            await updateTemplate(
+                formFieldsToUpdateTemplateForm(formFields as TemplateFormFields)
+            );
+        } else {
+            await updateTask(
+                formFieldsToUpdateTaskForm(formFields as TaskFormFields)
+            );
+        }
     };
 
-    const { mutate: updateTemplateMutation, isPending: isLoadingUpdate } =
+    const { mutate: updateEntityMutation, isPending: isLoadingUpdate } =
         useMutation({
-            mutationFn: updateTemplate,
+            mutationFn: updateEntity,
             onSuccess: () => {
-                queryClient.invalidateQueries({
-                    queryKey: ['templates']
-                });
-                showNotificationSuccess('Template updated');
+                if (apartmentId) {
+                    queryClient.invalidateQueries({
+                        queryKey: ['apartmentToEdit']
+                    });
+                } else {
+                    queryClient.invalidateQueries({
+                        queryKey: ['templates']
+                    });
+                }
+                showNotificationSuccess(
+                    `${apartmentId ? 'Task' : 'Template'} updated`
+                );
                 onClose?.();
             },
             onError: (e) => handleError(e)
@@ -99,10 +138,10 @@ export function TemplateForm({
     const onSubmit = () => {
         if (!nameValidate()) return;
 
-        if (template) {
-            updateTemplateMutation();
+        if (entity) {
+            updateEntityMutation();
         } else {
-            createTemplateMutation();
+            createEntityMutation();
         }
     };
 
@@ -114,60 +153,6 @@ export function TemplateForm({
             steps: [...formFields.steps, newStepValue]
         });
         setNewStepValue('');
-    };
-
-    // Handle delete step with confirmation
-    const handleDeleteStep = (index: number) => {
-        openModal({
-            title: (
-                <Group gap="xs">
-                    <IconAlertTriangle
-                        color="var(--mantine-color-red-6)"
-                        size={20}
-                    />
-                    <Text fw={700}>Confirm Deletion</Text>
-                </Group>
-            ),
-            message: (
-                <Text size="sm">
-                    Are you sure you want to delete this step?
-                </Text>
-            ),
-            color: 'red',
-            onConfirm: () => {
-                const newSteps = formFields.steps.filter((_, i) => i !== index);
-                setFormFields({
-                    ...formFields,
-                    steps: newSteps
-                });
-            }
-        });
-    };
-
-    // Start editing a step
-    const startEditingKey = (index: number, value: string) => {
-        setEditingStepIndex(index);
-        setEditingStepValue(value);
-    };
-
-    // Save edited step
-    const saveEditedStep = () => {
-        if (editingStepIndex !== null && editingStepValue.trim()) {
-            const newSteps = [...formFields.steps];
-            newSteps[editingStepIndex] = editingStepValue;
-            setFormFields({
-                ...formFields,
-                steps: newSteps
-            });
-            setEditingStepIndex(null);
-            setEditingStepValue('');
-        }
-    };
-
-    // Cancel edit
-    const cancelEdit = () => {
-        setEditingStepIndex(null);
-        setEditingStepValue('');
     };
 
     const disabledButton = isLoadingCreate || isLoadingUpdate || nameError;
@@ -229,7 +214,9 @@ export function TemplateForm({
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '1rem'
+                            gap: '1rem',
+                            overflowY: 'auto',
+                            padding: '0.25rem'
                         }}
                     >
                         {formFields.steps.map((step, index) => (
@@ -286,20 +273,19 @@ export function TemplateForm({
                         </Button>
                     </Group>
                 </Stack>
-
-                <ModalButtons>
-                    <Button variant="outline" onClick={onClose}>
-                        Cancel
-                    </Button>
-                    <Button
-                        disabled={disabledButton}
-                        type="submit"
-                        loading={isLoadingCreate || isLoadingUpdate}
-                    >
-                        {template ? 'Update' : 'Create'}
-                    </Button>
-                </ModalButtons>
             </Stack>
+            <ModalButtons>
+                <Button variant="outline" onClick={onClose}>
+                    Cancel
+                </Button>
+                <Button
+                    disabled={disabledButton}
+                    type="submit"
+                    loading={isLoadingCreate || isLoadingUpdate}
+                >
+                    {entity ? 'Update' : 'Create'}
+                </Button>
+            </ModalButtons>
         </form>
     );
 }

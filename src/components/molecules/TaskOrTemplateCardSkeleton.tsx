@@ -1,6 +1,6 @@
 import { Card, Skeleton } from '@mantine/core';
 
-export function TemplateCardSkeleton() {
+export function TaskOrTemplateCardSkeleton() {
     return (
         <Card
             w={'100%'}

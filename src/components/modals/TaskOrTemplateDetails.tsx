@@ -1,7 +1,7 @@
 import { Template } from '../../types/entities';
 import { TaskStep } from '../atoms/TaskStep';
 
-export function TemplateDetails({ entity }: { entity?: Template }) {
+export function TaskOrTemplateDetails({ entity }: { entity?: Template }) {
     return (
         entity && (
             <div

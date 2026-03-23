@@ -1,22 +1,22 @@
-import { Card, CardSection, Flex, Text, Title } from '@mantine/core';
+import { Card, Text, Title } from '@mantine/core';
 import { CardControls } from '../atoms/CardControls';
-import { Template } from '../../types/entities';
+import { Template, Task } from '../../types/entities';
 import styles from '../styles/DataTable.module.css';
 import { TaskCategoryBadge } from '../atoms/TaskCategoryBadge';
 
-interface TemplateCardProps {
-    item: Template;
+interface TaskOrTemplateCardProps {
+    item: Template | Task;
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
     onClick?: (id: string) => void;
 }
 
-export function TemplateCard({
+export function TaskOrTemplateCard({
     item,
     onEdit,
     onDelete,
     onClick
-}: TemplateCardProps) {
+}: TaskOrTemplateCardProps) {
     return (
         <Card
             w={'100%'}

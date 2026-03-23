@@ -7,12 +7,7 @@ import { Text } from '@mantine/core';
 import { Layout } from '../components/organism/layout/Layout';
 import { TopControls } from '../components/molecules/TopControls';
 import { DataTable } from '../components/organism/DataTable';
-import { TemplateCard } from '../components/molecules/TemplateCard';
-import { TemplateCardSkeleton } from '../components/molecules/TemplateCardSkeleton';
-import { TemplateForm } from '../components/modals/TemplateForm'; // Skeleton exists but not exported or we can just use null/spinner. Ah wait, component structure usually has skeletons. I didn't make a TemplateFormSkeleton as it wasn't explicitly requested but I made the Card/Details ones. For now I will check if DataTable needs a form skeleton. useEntityModal does. I'll use a generic or null if I didn't make one, or maybe just check if I should make it. The user only asked for TemplateCardSkeleton and TemplateDetailsSkeleton. I'll use a simple Loading or just the Form itself for now as usually forms are fast to load or I can use a generic skeleton if I had one.
-// Correction: I should probably use a basic skeleton or null.
-import { TemplateDetails } from '../components/modals/TemplateDetails';
-import { TemplateDetailsSkeleton } from '../components/skeletons/TemplateDetailsSkeleton';
+import { TaskOrTemplateCard } from '../components/molecules/TaskOrTemplateCard';
 
 import { useCrud } from '../hooks/useCrud';
 import { useError } from '../hooks/useError';
@@ -21,8 +16,10 @@ import { useConfirmModal } from '../hooks/useConfirmModal';
 import { useEntityModal } from '../components/molecules/EntityModal';
 import { Template } from '../types/entities';
 import { Page, TableStructure } from '../types/types';
-import { WorkerCardSkeleton } from '../components/molecules/WorkerCardSkeleton';
-import { TaskCategoryBadge } from '../components/atoms/TaskCategoryBadge';
+import { TaskOrTemplateForm } from '../components/modals/TaskOrTemplateForm';
+import { TaskOrTemplateFormSkeleton } from '../components/skeletons/TaskOrTemplateFormSkeleton';
+import { TaskOrTemplateCardSkeleton } from '../components/molecules/TaskOrTemplateCardSkeleton';
+import { userTaskOrTemplateDetailsModal } from '../components/organism/TaskOrTemplateDetailsModal';
 
 const tableStructure: TableStructure<Template> = {
     headers: [],
@@ -72,45 +69,12 @@ export function TemplatesScreen() {
         useEntityModal<Template>({
             entityName: 'template',
             queryKey: 'templateToEdit',
-            ModalBodyComponent: TemplateForm,
-            ModalBodySkeleton: WorkerCardSkeleton // User didn't ask for this, skipping or passing undefined/null
+            ModalBodyComponent: TaskOrTemplateForm,
+            ModalBodySkeleton: TaskOrTemplateFormSkeleton
         });
 
-    const { onOpen: onOpenDetailsModal, modalComponent: templateDetailsModal } =
-        useEntityModal<Template>({
-            entityName: 'template',
-            queryKey: 'templateToView',
-            title: (template) => {
-                if (!template) return '';
-                return (
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '1rem',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <Title
-                            order={4}
-                            style={{
-                                display: '-webkit-box',
-                                WebkitBoxOrient: 'vertical',
-                                WebkitLineClamp: 1,
-                                overflow: 'hidden'
-                            }}
-                        >
-                            {template.name}
-                        </Title>
-                        <TaskCategoryBadge category={template.category} />
-                        <Text style={{ whiteSpace: 'nowrap' }}>
-                            {template.duration} min
-                        </Text>
-                    </div>
-                );
-            },
-            ModalBodyComponent: TemplateDetails,
-            ModalBodySkeleton: TemplateDetailsSkeleton
-        });
+    const { onOpenDetailsModal, detailsModal } =
+        userTaskOrTemplateDetailsModal('template');
 
     const onDeleteTemplate = async (id: string) => {
         await remove(id);
@@ -179,8 +143,8 @@ export function TemplatesScreen() {
             />
             <DataTable
                 cardViewMode={true}
-                CardComponent={TemplateCard}
-                SkeletonComponent={TemplateCardSkeleton}
+                CardComponent={TaskOrTemplateCard}
+                SkeletonComponent={TaskOrTemplateCardSkeleton}
                 tableStructure={tableStructure}
                 isLoading={isLoading}
                 page={templatePage!}
@@ -192,7 +156,7 @@ export function TemplatesScreen() {
                 cardMinWidth="15rem"
             />
             {templateFormModal}
-            {templateDetailsModal}
+            {detailsModal}
         </Layout>
     );
 }

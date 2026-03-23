@@ -1,7 +1,7 @@
 import { Skeleton, Stack, Group } from '@mantine/core';
 import { ModalButtons } from '../molecules/ModalButtons';
 
-export function TemplateFormSkeleton() {
+export function TaskOrTemplateFormSkeleton() {
     return (
         <Stack gap="lg">
             <div>
@@ -11,7 +11,6 @@ export function TemplateFormSkeleton() {
 
             <Stack gap="xs">
                 <Skeleton height={20} width={60} /> {/* Steps Label */}
-                {/* Simulated Steps */}
                 <Group
                     align="flex-start"
                     wrap="nowrap"
