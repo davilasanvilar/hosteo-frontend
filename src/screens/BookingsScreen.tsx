@@ -131,7 +131,7 @@ export function BookingsScreen() {
         useEntityModal<Booking>({
             entityName: 'booking',
             queryKey: 'bookingToView',
-            title: (booking: Booking | undefined) => {
+            getTitle: (booking: Booking | undefined) => {
                 if (!booking) return '';
                 return (
                     <div

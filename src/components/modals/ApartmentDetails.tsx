@@ -1,60 +1,99 @@
 import { Image, Text } from '@mantine/core';
-import { Apartment } from '../../types/entities';
+import { ApartmentWithTasks } from '../../types/entities';
 import { addressToString } from '../../utils/utilFunctions';
 import { PlatformIcon } from '../atoms/PlatformIcon';
 import { useScreen } from '../../hooks/useScreen';
+import { TaskOrTemplateCard } from '../molecules/TaskOrTemplateCard';
+import { userTaskOrTemplateDetailsModal } from '../organism/TaskOrTemplateDetailsModal';
 
 export function ApartmentDetails({
     entity: apartment
 }: {
-    entity?: Apartment;
+    entity?: ApartmentWithTasks;
 }) {
     const { isTablet } = useScreen();
+    const {
+        onOpenDetailsModal: onOpenTaskDetailsModal,
+        detailsModal: taskDetailsModal
+    } = userTaskOrTemplateDetailsModal('task');
 
     return (
         <div
             style={{
                 display: 'flex',
+                flexDirection: 'column',
                 gap: '1rem',
-
-                flexDirection: isTablet ? 'row' : 'column'
+                height: '100%'
             }}
         >
-            <Image
-                src="/apartment_placeholder.svg"
-                height={120}
-                style={{
-                    objectFit: 'contain',
-                    objectPosition: isTablet ? 'left' : 'center'
-                }}
-                alt="Apartment picture"
-            />
             <div
                 style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    width: '100%'
+                    gap: '1rem',
+                    flexDirection: isTablet ? 'row' : 'column'
                 }}
             >
-                {apartment?.airbnbId && (
-                    <div>
-                        <PlatformIcon platform={'airbnb'} size={24} />
-                        <Text component="span" ml={'0.25rem'}>
-                            {apartment?.airbnbId}
-                        </Text>
-                    </div>
-                )}
-                {apartment?.bookingId && (
-                    <div>
-                        <PlatformIcon platform={'booking'} size={24} />
-                        <Text component="span" ml={'0.25rem'}>
-                            {apartment?.bookingId}
-                        </Text>
-                    </div>
-                )}
-                <Text c="dimmed">{addressToString(apartment?.address)}</Text>
+                <Image
+                    src="/apartment_placeholder.svg"
+                    height={120}
+                    style={{
+                        objectFit: 'contain',
+                        objectPosition: isTablet ? 'left' : 'center'
+                    }}
+                    alt="Apartment picture"
+                />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                        width: '100%'
+                    }}
+                >
+                    {apartment?.airbnbId && (
+                        <div>
+                            <PlatformIcon platform={'airbnb'} size={24} />
+                            <Text component="span" ml={'0.25rem'}>
+                                {apartment?.airbnbId}
+                            </Text>
+                        </div>
+                    )}
+                    {apartment?.bookingId && (
+                        <div>
+                            <PlatformIcon platform={'booking'} size={24} />
+                            <Text component="span" ml={'0.25rem'}>
+                                {apartment?.bookingId}
+                            </Text>
+                        </div>
+                    )}
+                    <Text c="dimmed">
+                        {addressToString(apartment?.address)}
+                    </Text>
+                </div>
             </div>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns:
+                        'repeat(auto-fill, minmax(15rem, 1fr))',
+                    justifyItems: 'center',
+                    gap: '1rem',
+                    rowGap: '2rem',
+                    width: '100%',
+                    overflowY: 'auto',
+                    height: '100%',
+                    paddingRight: '0.4rem'
+                }}
+            >
+                {apartment?.tasks &&
+                    apartment.tasks.map((task) => (
+                        <TaskOrTemplateCard
+                            item={task}
+                            onClick={onOpenTaskDetailsModal}
+                        />
+                    ))}
+            </div>
+            {taskDetailsModal}
         </div>
     );
 }

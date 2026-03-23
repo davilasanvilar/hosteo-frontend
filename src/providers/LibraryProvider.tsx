@@ -11,7 +11,6 @@ import {
     MultiSelect,
     Pagination,
     Radio,
-    RadioGroup,
     Switch,
     Table,
     TextInput
@@ -217,7 +216,8 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                             overflow: 'auto'
                         },
                         header: {
-                            backgroundColor: 'transparent'
+                            backgroundColor: 'transparent',
+                            gap: '0.5rem'
                         }
                     }
                 }),

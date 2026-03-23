@@ -3,6 +3,7 @@ import React, { ComponentType, useState } from 'react';
 import { useCrud } from '../../hooks/useCrud';
 import { useQuery } from '@tanstack/react-query';
 import { BaseEntity } from '../../types/entities';
+import { useScreen } from '../../hooks/useScreen';
 
 interface EntityModalProps {
     opened: boolean;
@@ -21,6 +22,7 @@ export function EntityModal({
     onExited,
     removeHeader
 }: EntityModalProps) {
+    const { isLaptop } = useScreen();
     return (
         <Modal
             opened={opened}
@@ -31,7 +33,12 @@ export function EntityModal({
             transitionProps={{
                 onExited: () => onExited?.()
             }}
-            styles={{ body: { height: '40rem', overflow: 'hidden' } }}
+            styles={{
+                body: {
+                    height: isLaptop ? '40rem' : '100%',
+                    overflow: 'hidden'
+                }
+            }}
         >
             {children}
         </Modal>
@@ -41,12 +48,14 @@ export function EntityModal({
 interface EntityModalBodyProps<T extends BaseEntity> {
     entity?: T;
     onClose?: () => void;
+    relatedEntityId?: string;
 }
 
 interface UseEntityModalProps<T extends BaseEntity> {
     entityName: string;
     queryKey: string;
-    title?: (entity: T | undefined) => React.ReactNode;
+    relatedEntityId?: string;
+    getTitle?: (entity: T | undefined) => React.ReactNode;
     removeHeader?: boolean;
     ModalBodyComponent: ComponentType<EntityModalBodyProps<T>>;
     ModalBodySkeleton: ComponentType;
@@ -61,7 +70,8 @@ interface UseEntityModalReturn {
 export const useEntityModal = <T extends BaseEntity>({
     entityName,
     queryKey,
-    title,
+    getTitle,
+    relatedEntityId,
     removeHeader,
     ModalBodyComponent,
     ModalBodySkeleton
@@ -103,8 +113,8 @@ export const useEntityModal = <T extends BaseEntity>({
                 title={
                     removeHeader
                         ? undefined
-                        : title
-                          ? title(entity)
+                        : getTitle
+                          ? getTitle(entity)
                           : defaultTitle
                 }
                 onExited={() => setEntityId(undefined)}
@@ -116,6 +126,7 @@ export const useEntityModal = <T extends BaseEntity>({
                     <ModalBodyComponent
                         onClose={onCloseModal}
                         entity={entity}
+                        relatedEntityId={relatedEntityId}
                     />
                 )}
             </EntityModal>

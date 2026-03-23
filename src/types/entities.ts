@@ -47,6 +47,10 @@ export interface Apartment extends BaseEntity {
     visible: boolean;
 }
 
+export interface ApartmentWithTasks extends Apartment {
+    tasks: Task[];
+}
+
 export interface Task extends BaseEntity {
     name: string;
     category: CategoryEnum;

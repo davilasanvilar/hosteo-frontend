@@ -17,7 +17,7 @@ import {
     IconSearch
 } from '@tabler/icons-react';
 import { useCrud } from '../hooks/useCrud';
-import { Apartment } from '../types/entities';
+import { ApartmentWithTasks } from '../types/entities';
 import { Page, TableStructure } from '../types/types';
 import { useQuery } from '@tanstack/react-query';
 import { addressToString } from '../utils/utilFunctions';
@@ -36,7 +36,7 @@ import { useEntityModal } from '../components/molecules/EntityModal';
 import { ApartmentFormSkeleton } from '../components/skeletons/ApartmentFormSkeleton';
 import { ApartmentDetailsSkeleton } from '../components/skeletons/ApartmentDetailsSkeleton';
 
-const tableStructure: TableStructure<Apartment> = {
+const tableStructure: TableStructure<ApartmentWithTasks> = {
     headers: [
         'Name',
         <div
@@ -76,7 +76,7 @@ const tableStructure: TableStructure<Apartment> = {
 };
 
 export function ApartmentsScreen() {
-    const { search, remove } = useCrud<Apartment>('apartment');
+    const { search, remove } = useCrud<ApartmentWithTasks>('apartment');
     const { handleError } = useError();
     const { isTablet } = useScreen();
     const { openModal } = useConfirmModal();
@@ -93,7 +93,7 @@ export function ApartmentsScreen() {
         isLoading,
         isError,
         error
-    } = useQuery<Page<Apartment>>({
+    } = useQuery<Page<ApartmentWithTasks>>({
         queryKey: ['apartments', pageNumber, debouncedNameSearch, stateSearch],
         queryFn: () =>
             search(pageNumber - 1, 15, {
@@ -113,7 +113,7 @@ export function ApartmentsScreen() {
     }, [isError, error]);
 
     const { onOpen: onOpenFormModal, modalComponent: apartmentFormModal } =
-        useEntityModal<Apartment>({
+        useEntityModal<ApartmentWithTasks>({
             entityName: 'apartment',
             queryKey: 'apartmentToEdit',
             ModalBodyComponent: ApartmentForm,
@@ -123,10 +123,10 @@ export function ApartmentsScreen() {
     const {
         onOpen: onOpenDetailsModal,
         modalComponent: apartmentDetailsModal
-    } = useEntityModal<Apartment>({
+    } = useEntityModal<ApartmentWithTasks>({
         entityName: 'apartment',
         queryKey: 'apartmentToView',
-        title: (apartment) => {
+        getTitle: (apartment) => {
             if (!apartment) return '';
             return (
                 <div

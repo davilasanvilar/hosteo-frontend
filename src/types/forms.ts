@@ -1,4 +1,4 @@
-import { Address, Apartment, Booking, Template } from './entities';
+import { Address, Apartment, Booking, Task, Template } from './entities';
 import {
     ApartmentState,
     AssignmentState,
@@ -165,7 +165,6 @@ export const bookingToForm = (booking: Booking | undefined): BookingFormFields =
 };
 
 export const formFieldsToCreateBookingForm = (formFields: BookingFormFields): BookingCreateForm => {
-    console.log(formFields.startDate)
     return {
         apartmentId: formFields.apartmentId!,
         startDate: dayjs(formFields.startDate, conf.dateInputFormat).unix(),
@@ -199,15 +198,72 @@ export interface TaskCreateForm {
     steps: string[];
 }
 
-export interface TemplateCreateForm {
+export interface TaskUpdateForm {
+    id: string;
     name: string;
     category: CategoryEnum;
     duration: number;
+    extra: boolean;
     steps: string[];
 }
 
-export interface TaskUpdateForm {
-    id: string;
+export interface TaskFormFields {
+    id?: string;
+    apartmentId?: string;
+    name: string;
+    category: CategoryEnum;
+    duration: number;
+    extra: boolean;
+    steps: string[];
+}
+
+export const taskToForm = (task: Task | undefined, apartmentId?: string): TaskFormFields => {
+    if (!task) {
+        return {
+            apartmentId: apartmentId!,
+            name: '',
+            category: CategoryEnum.CLEANING,
+            duration: 0,
+            extra: false,
+            steps: []
+        };
+    }
+    return {
+        id: task.id,
+        name: task.name,
+        category: task.category,
+        duration: task.duration,
+        extra: task.extra,
+        steps: task.steps
+    };
+}
+
+export const formFieldsToCreateTaskForm = (formFields: TaskFormFields, apartmentId: string): TaskCreateForm => {
+    return {
+        apartmentId: apartmentId,
+        name: formFields.name,
+        category: formFields.category,
+        duration: formFields.duration,
+        extra: formFields.extra,
+        steps: formFields.steps
+    };
+}
+
+export const formFieldsToUpdateTaskForm = (formFields: TaskFormFields): TaskUpdateForm => {
+    if (!formFields.id) {
+        throw new Error('Id is required');
+    }
+    return {
+        id: formFields.id,
+        name: formFields.name,
+        category: formFields.category,
+        duration: formFields.duration,
+        extra: formFields.extra,
+        steps: formFields.steps
+    };
+}
+
+export interface TemplateCreateForm {
     name: string;
     category: CategoryEnum;
     duration: number;
