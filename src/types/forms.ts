@@ -1,4 +1,4 @@
-import { Address, Apartment, Booking, Task, Template } from './entities';
+import { Address, Apartment, Assignment, Booking, Task, Template } from './entities';
 import {
     ApartmentState,
     AssignmentState,
@@ -327,13 +327,73 @@ export const formFieldsToUpdateTemplateForm = (formFields: TemplateFormFields): 
 };
 
 
-export interface AssignmentUpdateForm {
-    id: string;
-    startDate: Date;
-    endDate: Date;
+export interface AssignmentCreateForm {
+    taskId: string;
+    startDate: number;
+    endDate: number;
     workerId: string;
     state: AssignmentState;
 }
+
+export interface AssignmentUpdateForm {
+    id: string;
+    startDate: number;
+    endDate: number;
+    workerId: string;
+    state: AssignmentState;
+}
+
+export interface AssignmentFormFields {
+    id?: string;
+    taskId: string;
+    startDate: string;
+    endDate: string;
+    workerId: string;
+    state: AssignmentState;
+}
+
+export const assignmentToForm = (assignment: Assignment | undefined): AssignmentFormFields => {
+    if (!assignment) {
+        return {
+            taskId: '',
+            startDate: '',
+            endDate: '',
+            workerId: '',
+            state: AssignmentState.PENDING
+        };
+    }
+    return {
+        id: assignment.id,
+        taskId: assignment.task.id,
+        startDate: dayjs.unix(assignment.startDate).format(conf.dateInputFormat),
+        endDate: dayjs.unix(assignment.endDate).format(conf.dateInputFormat),
+        workerId: assignment.worker.id,
+        state: assignment.state
+    };
+};
+
+export const formFieldsToCreateAssignmentForm = (formFields: AssignmentFormFields, taskId: string): AssignmentCreateForm => {
+    return {
+        taskId: taskId,
+        startDate: dayjs(formFields.startDate, conf.dateInputFormat).unix(),
+        endDate: dayjs(formFields.endDate, conf.dateInputFormat).unix(),
+        workerId: formFields.workerId,
+        state: formFields.state
+    };
+};
+
+export const formFieldsToUpdateAssignmentForm = (formFields: AssignmentFormFields): AssignmentUpdateForm => {
+    if (!formFields.id) {
+        throw new Error('Id is required');
+    }
+    return {
+        id: formFields.id,
+        startDate: dayjs(formFields.startDate, conf.dateInputFormat).unix(),
+        endDate: dayjs(formFields.endDate, conf.dateInputFormat).unix(),
+        workerId: formFields.workerId,
+        state: formFields.state
+    };
+};
 
 export interface WorkerCreateForm {
     name: string;

@@ -39,7 +39,7 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                     '#f5f5f5'
                 ],
                 primary: [
-                    '#5385F9',
+                    '#e1eaff',
                     '#5385F9',
                     '#5385F9',
                     '#5385F9',
@@ -203,6 +203,7 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                     defaultProps: {
                         fullScreen: isTablet ? false : true
                     },
+
                     styles: {
                         content: {
                             display: 'flex',

@@ -1,0 +1,300 @@
+import { Button, Select } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { Assignment, Task, Worker } from '../../types/entities';
+import { useEffect, useState } from 'react';
+import { notEmptyValidator, useValidator } from '../../hooks/useValidator';
+import { useCrud } from '../../hooks/useCrud';
+import { useMutation } from '@tanstack/react-query';
+import { showNotificationSuccess } from '../../utils/notifUtils';
+import { useReactQuery } from '../../hooks/useReactQuery';
+import { useError } from '../../hooks/useError';
+import { AssignmentState } from '../../types/enums';
+import { ModalButtons } from '../molecules/ModalButtons';
+import {
+    AssignmentFormFields,
+    assignmentToForm,
+    formFieldsToCreateAssignmentForm,
+    formFieldsToUpdateAssignmentForm
+} from '../../types/forms';
+import { conf } from '../../../conf';
+import dayjs from 'dayjs';
+import { CustomTimePicker } from '../atoms/CustomTimePicker';
+import { AssignmentStateBadge } from '../atoms/AssignmentStateBadge';
+import { WorkerSelector } from '../molecules/WorkerSelector';
+
+export function AssignmentForm({
+    onClose,
+    entity: assignment,
+    relatedEntity: task
+}: {
+    onClose?: () => void;
+    entity?: Assignment;
+    relatedEntity?: Task;
+}) {
+    const { queryClient } = useReactQuery();
+    const { handleError } = useError();
+    const { create, update } = useCrud<Assignment>('assignment');
+
+    const [formFields, setFormFields] = useState<AssignmentFormFields>(
+        assignmentToForm(assignment)
+    );
+    const [selectedWorker, setSelectedWorker] = useState<Worker | undefined>(
+        assignment?.worker
+    );
+
+    useEffect(() => {
+        if (assignment) {
+            setFormFields(assignmentToForm(assignment));
+        }
+    }, [assignment]);
+
+    const [
+        startDateDirty,
+        startDateError,
+        startDateMessage,
+        startDateValidate,
+        setDirtyStartDate
+    ] = useValidator(formFields.startDate, [notEmptyValidator]);
+    const [
+        endDateDirty,
+        endDateError,
+        endDateMessage,
+        endDateValidate,
+        setDirtyEndDate
+    ] = useValidator(formFields.endDate, [notEmptyValidator]);
+
+    const [stateDirty, stateError, stateMessage, stateValidate, setDirtyState] =
+        useValidator(formFields.state, [notEmptyValidator]);
+
+    const createAssignment = async () => {
+        if (!task) return;
+        await create(formFieldsToCreateAssignmentForm(formFields, task.id));
+    };
+
+    const { mutate: createAssignmentMutation, isPending: isLoadingCreate } =
+        useMutation({
+            mutationFn: createAssignment,
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['bookingToView'] });
+                showNotificationSuccess('Assignment created');
+                onClose?.();
+            },
+            onError: handleError
+        });
+
+    const updateAssignment = async () => {
+        await update(formFieldsToUpdateAssignmentForm(formFields));
+    };
+
+    const { mutate: updateAssignmentMutation, isPending: isLoadingUpdate } =
+        useMutation({
+            mutationFn: updateAssignment,
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['bookingToView'] });
+                showNotificationSuccess('Assignment updated');
+                onClose?.();
+            },
+            onError: handleError
+        });
+
+    const onSubmit = () => {
+        if (!startDateValidate() || !endDateValidate() || !stateValidate())
+            return;
+
+        if (assignment) {
+            updateAssignmentMutation();
+        } else {
+            createAssignmentMutation();
+        }
+    };
+
+    const handleWorkerSelect = (worker: Worker) => {
+        if (worker) {
+            setFormFields((prev) => ({
+                ...prev,
+                workerId: worker.id
+            }));
+        }
+        setSelectedWorker(worker);
+    };
+
+    const disabledButton =
+        isLoadingCreate ||
+        isLoadingUpdate ||
+        startDateError ||
+        endDateError ||
+        stateError;
+
+    return (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                minHeight: '400px'
+            }}
+        >
+            <form
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem'
+                }}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    onSubmit();
+                }}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '1rem'
+                    }}
+                >
+                    <WorkerSelector
+                        worker={selectedWorker}
+                        onSelectWorker={handleWorkerSelect}
+                    />
+                </div>
+                <div style={{ display: 'flex', gap: '2rem' }}>
+                    <DatePicker
+                        type="default"
+                        defaultDate={formFields.startDate}
+                        value={formFields.startDate}
+                        onChange={(value) => {
+                            setFormFields((prev) => {
+                                const prevStartDate = dayjs(prev.startDate);
+                                const prevEndDate = dayjs(prev.endDate);
+                                let newStartDate = dayjs(value);
+                                let newEndDate = dayjs(value);
+
+                                if (newStartDate.isValid()) {
+                                    if (prevStartDate.isValid()) {
+                                        newStartDate = newStartDate
+                                            .hour(prevStartDate.hour())
+                                            .minute(prevStartDate.minute());
+                                    }
+                                }
+
+                                if (newEndDate.isValid()) {
+                                    if (prevEndDate.isValid()) {
+                                        newEndDate = newEndDate
+                                            .hour(prevEndDate.hour())
+                                            .minute(prevEndDate.minute());
+                                    }
+                                }
+
+                                if (newEndDate.isBefore(newStartDate)) {
+                                    newEndDate = newEndDate.add(1, 'day');
+                                }
+
+                                return {
+                                    ...prev,
+                                    startDate: newStartDate.isValid()
+                                        ? newStartDate.format(
+                                              conf.dateInputFormat
+                                          )
+                                        : '',
+                                    endDate: newEndDate.isValid()
+                                        ? newEndDate.format(
+                                              conf.dateInputFormat
+                                          )
+                                        : ''
+                                };
+                            });
+                        }}
+                    />
+
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '100%',
+                            gap: '1rem'
+                        }}
+                    >
+                        <CustomTimePicker
+                            isStart={true}
+                            date={formFields.startDate}
+                            updateDate={(value: string) =>
+                                setFormFields((oldValue) => {
+                                    const duration = task?.duration
+                                        ? task.duration
+                                        : 0;
+                                    return {
+                                        ...oldValue,
+                                        startDate: value,
+                                        endDate: dayjs(value)
+                                            .add(duration, 'minute')
+                                            .format(conf.dateInputFormat)
+                                    };
+                                })
+                            }
+                        />
+                        <CustomTimePicker
+                            isStart={false}
+                            date={formFields.endDate}
+                            updateDate={(value: string) =>
+                                setFormFields((oldValue) => {
+                                    const startDate = dayjs(oldValue.startDate);
+                                    const newEndDate = dayjs(value);
+                                    let endDate = startDate
+                                        .set('hour', newEndDate.hour())
+                                        .set('minute', newEndDate.minute());
+
+                                    if (endDate.isBefore(startDate)) {
+                                        endDate = endDate.add(1, 'day');
+                                    }
+                                    return {
+                                        ...oldValue,
+                                        endDate: endDate.format(
+                                            conf.dateInputFormat
+                                        )
+                                    };
+                                })
+                            }
+                        />
+                        <Select
+                            label="State"
+                            value={formFields.state}
+                            onChange={(val) => {
+                                setFormFields({
+                                    ...formFields,
+                                    state: val as AssignmentState
+                                });
+                                setDirtyState();
+                            }}
+                            data={Object.values(AssignmentState)}
+                            withAsterisk
+                            renderOption={(option) => (
+                                <AssignmentStateBadge
+                                    state={
+                                        option.option.value as AssignmentState
+                                    }
+                                />
+                            )}
+                            error={
+                                stateError && stateDirty
+                                    ? stateMessage
+                                    : undefined
+                            }
+                            allowDeselect={false}
+                        />
+                    </div>
+                </div>
+                <ModalButtons>
+                    <Button variant="outline" onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={disabledButton}
+                        type="submit"
+                        loading={isLoadingCreate || isLoadingUpdate}
+                    >
+                        {assignment ? 'Update' : 'Save'}
+                    </Button>
+                </ModalButtons>
+            </form>
+        </div>
+    );
+}
