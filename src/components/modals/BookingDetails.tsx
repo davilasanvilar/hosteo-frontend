@@ -6,10 +6,12 @@ import { ApartmentStateBadge } from '../atoms/ApartmentStateBadge';
 import dayjs from 'dayjs';
 import { conf } from '../../../conf';
 import { IconLogin, IconLogout } from '@tabler/icons-react';
+import { useConfirmModalWithContext } from '../../hooks/useConfirmModalWithContext';
 
 export function BookingDetails({ entity: booking }: { entity?: Booking }) {
     const { isTablet } = useScreen();
     const theme = useMantineTheme();
+    const { openModal } = useConfirmModalWithContext();
 
     return booking ? (
         <div

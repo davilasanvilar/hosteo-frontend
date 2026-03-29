@@ -1,6 +1,6 @@
-import { Button, TextInput, Title } from '@mantine/core';
+import { Button, TextInput } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { IconAlertTriangle, IconPlus, IconSearch } from '@tabler/icons-react'; // Removed IconLayoutGrid, IconLayoutList as layout is fixed
+import { IconPlus, IconSearch } from '@tabler/icons-react'; // Removed IconLayoutGrid, IconLayoutList as layout is fixed
 import { useState, useEffect } from 'react';
 import { Text } from '@mantine/core';
 
@@ -12,7 +12,7 @@ import { TaskOrTemplateCard } from '../components/molecules/TaskOrTemplateCard';
 import { useCrud } from '../hooks/useCrud';
 import { useError } from '../hooks/useError';
 import { useScreen } from '../hooks/useScreen';
-import { useConfirmModal } from '../hooks/useConfirmModal';
+import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
 import { useEntityModal } from '../components/molecules/EntityModal';
 import { Template } from '../types/entities';
 import { Page, TableStructure } from '../types/types';
@@ -30,7 +30,7 @@ export function TemplatesScreen() {
     const { search, remove } = useCrud<Template>('template'); // Entity name 'template'
     const { handleError } = useError();
     const { isTablet } = useScreen();
-    const { openModal } = useConfirmModal();
+    const { openModal } = useConfirmModalWithContext();
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [nameSearch, setNameSearch] = useState<string>('');
@@ -83,21 +83,7 @@ export function TemplatesScreen() {
 
     const openDeleteModal = (id: string) =>
         openModal({
-            title: (
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '0.5rem',
-                        alignItems: 'center'
-                    }}
-                >
-                    <IconAlertTriangle
-                        color="var(--mantine-color-red-6)"
-                        size={16}
-                    />
-                    <Text fw={700}>Delete template</Text>
-                </div>
-            ),
+            title: 'Delete template',
             message: (
                 <Text size="sm">
                     Are you sure you want to delete this template? This action

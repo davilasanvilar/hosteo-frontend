@@ -39,9 +39,9 @@ export function DataTable<T extends BaseEntity>({
             <CardComponent
                 key={item.id}
                 item={item}
-                onClick={onClick}
-                onDelete={onDelete}
-                onEdit={onEdit}
+                onClick={onClick && (() => onClick(item.id))}
+                onDelete={onDelete && (() => onDelete(item.id))}
+                onEdit={onEdit && (() => onEdit(item.id))}
             />
         ));
 

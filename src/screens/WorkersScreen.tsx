@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useError } from '../hooks/useError';
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
-import { useConfirmModal } from '../hooks/useConfirmModal';
+import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
 import { DataTable } from '../components/organism/DataTable';
 import { WorkerCard } from '../components/molecules/WorkerCard';
 import { WorkerCardSkeleton } from '../components/molecules/WorkerCardSkeleton';
@@ -22,7 +22,7 @@ export function WorkersScreen() {
     const { search, remove } = useCrud<Worker>('worker');
     const { handleError } = useError();
     const { isTablet } = useScreen();
-    const { openModal } = useConfirmModal();
+    const { openModal } = useConfirmModalWithContext();
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [nameSearch, setNameSearch] = useState<string>('');
@@ -71,18 +71,9 @@ export function WorkersScreen() {
 
     const openDeleteModal = (id: string) =>
         openModal({
-            title: (
-                <>
-                    <IconAlertTriangle color="error" size={16} />
-                    <Text>Delete worker</Text>
-                </>
-            ),
-            message: (
-                <Text size="sm">
-                    Deleting this worker will delete all the associated
-                    information like assignments.
-                </Text>
-            ),
+            title: 'Delete worker',
+            message:
+                'Deleting this worker will delete all the associated information like assignments.',
             color: 'error',
             onConfirm: () => onDeleteWorker(id)
         });

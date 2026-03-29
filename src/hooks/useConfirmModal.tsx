@@ -1,13 +1,46 @@
-import { useContext } from 'react';
-import { ConfirmModalContext } from '../providers/ConfirmModalProvider';
+import { ReactNode, useState } from 'react';
+import { ConfirmationModal } from '../components/modals/ConfirmationModal';
+import { ExtendedCustomColors } from '../mantine';
 
-export const useConfirmModal = () => {
-    const ctx = useContext(ConfirmModalContext);
-    if (ctx === null) {
-        throw new Error(
-            'useConfirmModal() can only be used on the descendants of ConfirmModalProvider'
-        );
-    } else {
-        return ctx;
-    }
+export interface ConfirmModalProperties {
+    title: string;
+    message: string;
+    color: ExtendedCustomColors;
+    onConfirm: () => void;
+}
+
+export interface IUseConfirmModal {
+    openModal: (props: ConfirmModalProperties) => void;
+    modalComponent: ReactNode;
+}
+
+export const useConfirmModal = (): IUseConfirmModal => {
+    const [opened, setOpened] = useState<boolean>(false);
+    const [confirmModalProperties, setConfirmModalProperties] = useState<
+        ConfirmModalProperties | undefined
+    >(undefined);
+
+    const onOpenModal = () => {
+        setOpened(true);
+    };
+
+    const onCloseModal = () => {
+        setOpened(false);
+    };
+
+    const ModalComponent = (
+        <ConfirmationModal
+            opened={opened}
+            onClose={onCloseModal}
+            confirmModalProperties={confirmModalProperties}
+        />
+    );
+
+    return {
+        openModal: (props: ConfirmModalProperties) => {
+            setConfirmModalProperties(props);
+            onOpenModal();
+        },
+        modalComponent: ModalComponent
+    };
 };

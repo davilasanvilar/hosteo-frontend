@@ -33,6 +33,13 @@ export function EntityModal({
             transitionProps={{
                 onExited: () => onExited?.()
             }}
+            closeOnEscape={false}
+            onKeyDown={(e) => {
+                e.stopPropagation();
+                if (e.key === 'Escape') {
+                    onClose();
+                }
+            }}
             styles={{
                 body: {
                     height: isLaptop ? '40rem' : '100%',
@@ -49,12 +56,14 @@ interface EntityModalBodyProps<T extends BaseEntity> {
     entity?: T;
     onClose?: () => void;
     relatedEntityId?: string;
+    relatedEntity?: any;
 }
 
 interface UseEntityModalProps<T extends BaseEntity> {
     entityName: string;
     queryKey: string;
     relatedEntityId?: string;
+    relatedEntity?: BaseEntity;
     getTitle?: (entity: T | undefined) => React.ReactNode;
     removeHeader?: boolean;
     ModalBodyComponent: ComponentType<EntityModalBodyProps<T>>;
@@ -72,6 +81,7 @@ export const useEntityModal = <T extends BaseEntity>({
     queryKey,
     getTitle,
     relatedEntityId,
+    relatedEntity,
     removeHeader,
     ModalBodyComponent,
     ModalBodySkeleton
@@ -97,6 +107,7 @@ export const useEntityModal = <T extends BaseEntity>({
 
     const onCloseModal = () => {
         setOpened(false);
+        setEntityId(undefined);
     };
 
     const defaultTitle = entityId
@@ -117,7 +128,6 @@ export const useEntityModal = <T extends BaseEntity>({
                           ? getTitle(entity)
                           : defaultTitle
                 }
-                onExited={() => setEntityId(undefined)}
                 removeHeader={removeHeader}
             >
                 {isLoading && entityId ? (
@@ -127,6 +137,7 @@ export const useEntityModal = <T extends BaseEntity>({
                         onClose={onCloseModal}
                         entity={entity}
                         relatedEntityId={relatedEntityId}
+                        relatedEntity={relatedEntity}
                     />
                 )}
             </EntityModal>

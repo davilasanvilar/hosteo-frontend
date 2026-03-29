@@ -80,8 +80,8 @@ export interface Worker extends BaseEntity {
 
 export interface Assignment extends BaseEntity {
     task: Task;
-    startDate: Date;
-    endDate: Date;
+    startDate: number;
+    endDate: number;
     worker: Worker;
     state: AssignmentState;
 }

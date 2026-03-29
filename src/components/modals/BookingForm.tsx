@@ -79,7 +79,11 @@ export function BookingForm({
     });
 
     useEffect(() => {
-        if (booking) {
+        if (!booking) {
+            setFormFields(bookingToForm(undefined)); // Reset form for new entity or when entity is cleared
+            setStep(1); // Reset step for new booking
+            setSelectedApartment(undefined); // Clear selected apartment
+        } else {
             setFormFields(bookingToForm(booking));
         }
     }, [booking]);
@@ -218,7 +222,7 @@ export function BookingForm({
                                     <IconArrowLeft size={18} />
                                 </ActionIcon>
                             )}
-                            Booking{' '}
+                            Booking
                             {booking
                                 ? booking.apartment.name
                                 : selectedApartment?.name}
@@ -301,14 +305,14 @@ export function BookingForm({
 
                                     if (newStartDate.isValid()) {
                                         if (prevStartDate.isValid()) {
-                                            newStartDate
+                                            newStartDate = newStartDate
                                                 .hour(prevStartDate.hour())
                                                 .minute(prevStartDate.minute());
                                         }
                                     }
                                     if (newEndDate.isValid()) {
                                         if (prevEndDate.isValid()) {
-                                            newEndDate
+                                            newEndDate = newEndDate
                                                 .hour(prevEndDate.hour())
                                                 .minute(prevEndDate.minute());
                                         }

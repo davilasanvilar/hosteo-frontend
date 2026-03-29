@@ -1,75 +1,22 @@
-import { Button, Modal } from '@mantine/core';
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import { ExtendedCustomColors } from '../mantine';
-import { ModalButtons } from '../components/molecules/ModalButtons';
+import { createContext, ReactNode } from 'react';
+import { useConfirmModal, IUseConfirmModal } from '../hooks/useConfirmModal';
 
-export interface ConfirmModalContext {
-    openModal: (props: ConfirmModalProperties) => void;
-}
-export interface ConfirmModalProperties {
-    title: ReactNode;
-    message: ReactNode;
-    color: ExtendedCustomColors;
-    onConfirm: () => void;
-}
-export const ConfirmModalContext = createContext<ConfirmModalContext>(
-    {} as ConfirmModalContext
+type IConfirmModalContext = Omit<IUseConfirmModal, 'modalComponent'>;
+
+export const ConfirmModalContext = createContext<IConfirmModalContext>(
+    {} as IConfirmModalContext
 );
 
 export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
-    const value: ConfirmModalContext = {
-        openModal: (props: ConfirmModalProperties) => {
-            setConfirmModalProperties(props);
-        }
+    const { openModal, modalComponent: ModalComponent } = useConfirmModal();
+
+    const value: IConfirmModalContext = {
+        openModal
     };
-    const [opened, setOpened] = useState<boolean>(false);
-    const [confirmModalProperties, setConfirmModalProperties] = useState<
-        ConfirmModalProperties | undefined
-    >(undefined);
-
-    useEffect(() => {
-        if (confirmModalProperties) {
-            setOpened(true);
-        }
-    }, [confirmModalProperties]);
-
-    const onClose = () => {
-        setOpened(false);
-    };
-
-    const onConfirmAndClose = () => {
-        onConfirm && onConfirm();
-        onClose();
-    };
-
-    const { title, message, color, onConfirm } = confirmModalProperties || {};
 
     return (
         <ConfirmModalContext.Provider value={value}>
-            <Modal
-                zIndex={1000}
-                title={title}
-                opened={opened}
-                onClose={onClose}
-                transitionProps={{
-                    onExited: () => setConfirmModalProperties(undefined)
-                }}
-            >
-                {message}
-                <ModalButtons>
-                    <Button onClick={onClose} color={color} variant="outline">
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={onConfirmAndClose}
-                        color={color}
-                        variant="filled"
-                    >
-                        Confirm
-                    </Button>
-                </ModalButtons>
-            </Modal>
-
+            {ModalComponent}
             {children}
         </ConfirmModalContext.Provider>
     );

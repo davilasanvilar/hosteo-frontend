@@ -17,12 +17,12 @@ import { ApartmentState } from '../../types/enums';
 import { ApartmentStateBadge } from '../atoms/ApartmentStateBadge';
 import { useScreen } from '../../hooks/useScreen';
 import { ModalButtons } from '../molecules/ModalButtons';
-import { IconAlertTriangle, IconPlus } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { useEntityModal } from '../molecules/EntityModal';
 import { TaskOrTemplateForm } from './TaskOrTemplateForm';
 import { TaskOrTemplateFormSkeleton } from '../skeletons/TaskOrTemplateFormSkeleton';
 import { TasksSection } from '../molecules/TasksSection';
-import { useConfirmModal } from '../../hooks/useConfirmModal';
+import { useConfirmModalWithContext } from '../../hooks/useConfirmModalWithContext';
 
 export function ApartmentForm({
     onClose,
@@ -36,7 +36,7 @@ export function ApartmentForm({
     const [formFields, setFormFields] = useState<ApartmentFormFields>(
         apartmentToForm(apartment)
     );
-    const { openModal } = useConfirmModal();
+    const { openModal } = useConfirmModalWithContext();
 
     const { onOpen: onOpenFormModal, modalComponent: taskFormModal } =
         useEntityModal<Task>({
@@ -62,27 +62,9 @@ export function ApartmentForm({
 
     const openDeleteModal = (id: string) =>
         openModal({
-            title: (
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '0.5rem',
-                        alignItems: 'center'
-                    }}
-                >
-                    <IconAlertTriangle
-                        color="var(--mantine-color-red-6)"
-                        size={16}
-                    />
-                    <Text fw={700}>Delete template</Text>
-                </div>
-            ),
-            message: (
-                <Text size="sm">
-                    Are you sure you want to delete this task? This action
-                    cannot be undone.
-                </Text>
-            ),
+            title: 'Delete template',
+            message:
+                'Are you sure you want to delete this task? This action cannot be undone',
             color: 'red',
             onConfirm: () => onDeleteTask(id)
         });
@@ -94,7 +76,7 @@ export function ApartmentForm({
 
     const { create, update: updateApartment } =
         useCrud<ApartmentWithTasks>('apartment');
-    const { update: updateTask, remove: removeTask } = useCrud<Task>('task'); // Entity name 'template'
+    const { remove: removeTask } = useCrud<Task>('task');
 
     const { isTablet } = useScreen();
 

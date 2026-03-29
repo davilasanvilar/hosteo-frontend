@@ -53,13 +53,9 @@ export function TaskOrTemplateForm({
     const [newStepValue, setNewStepValue] = useState<string>('');
 
     useEffect(() => {
-        if (entity) {
-            setFormFields(
-                apartmentId
-                    ? taskToForm(entity as Task)
-                    : templateToForm(entity)
-            );
-        }
+        setFormFields(
+            apartmentId ? taskToForm(entity as Task) : templateToForm(entity)
+        );
     }, [entity]);
 
     const [nameDirty, nameError, nameMessage, nameValidate, setDirtyName] =

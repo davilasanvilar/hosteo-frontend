@@ -30,8 +30,8 @@ export function TasksSection({
                 <TaskOrTemplateCard
                     item={task}
                     key={task.id}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
+                    onEdit={() => onEdit(task.id)}
+                    onDelete={() => onDelete(task.id)}
                 />
             ))}
         </Tabs.Panel>

@@ -1,16 +1,8 @@
-import {
-    Button,
-    MultiSelect,
-    Switch,
-    Text,
-    TextInput,
-    Title
-} from '@mantine/core';
+import { Button, MultiSelect, Switch, TextInput, Title } from '@mantine/core';
 import { Layout } from '../components/organism/layout/Layout';
 import { ApartmentForm } from '../components/modals/ApartmentForm';
 import { useEffect, useState } from 'react';
 import {
-    IconAlertTriangle,
     IconLayoutGrid,
     IconLayoutList,
     IconPlus,
@@ -31,10 +23,10 @@ import { ApartmentCardSkeleton } from '../components/molecules/ApartmentCardSkel
 import { ApartmentDetails } from '../components/modals/ApartmentDetails';
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
-import { useConfirmModal } from '../hooks/useConfirmModal';
 import { useEntityModal } from '../components/molecules/EntityModal';
 import { ApartmentFormSkeleton } from '../components/skeletons/ApartmentFormSkeleton';
 import { ApartmentDetailsSkeleton } from '../components/skeletons/ApartmentDetailsSkeleton';
+import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
 
 const tableStructure: TableStructure<ApartmentWithTasks> = {
     headers: [
@@ -79,7 +71,7 @@ export function ApartmentsScreen() {
     const { search, remove } = useCrud<ApartmentWithTasks>('apartment');
     const { handleError } = useError();
     const { isTablet } = useScreen();
-    const { openModal } = useConfirmModal();
+    const { openModal } = useConfirmModalWithContext();
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [nameSearch, setNameSearch] = useState<string>('');
@@ -167,18 +159,9 @@ export function ApartmentsScreen() {
 
     const openDeleteModal = (id: string) =>
         openModal({
-            title: (
-                <>
-                    <IconAlertTriangle color="error" size={16} />
-                    <Text>Delete apartment</Text>
-                </>
-            ),
-            message: (
-                <Text size="sm">
-                    Deleting this apartment will delete all the associated
-                    information like bookings, assignments and tasks
-                </Text>
-            ),
+            title: 'Delete apartment',
+            message:
+                'Deleting this apartment will delete all the associated information like bookings, assignments and tasks',
             color: 'error',
             onConfirm: () => onDeleteApartment(id)
         });

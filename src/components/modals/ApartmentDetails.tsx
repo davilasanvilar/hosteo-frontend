@@ -1,4 +1,4 @@
-import { Image, Text } from '@mantine/core';
+import { Divider, Image, Text } from '@mantine/core';
 import { ApartmentWithTasks } from '../../types/entities';
 import { addressToString } from '../../utils/utilFunctions';
 import { PlatformIcon } from '../atoms/PlatformIcon';
@@ -71,6 +71,7 @@ export function ApartmentDetails({
                     </Text>
                 </div>
             </div>
+            <Divider />
             <div
                 style={{
                     display: 'grid',
@@ -88,8 +89,9 @@ export function ApartmentDetails({
                 {apartment?.tasks &&
                     apartment.tasks.map((task) => (
                         <TaskOrTemplateCard
+                            key={task.id}
                             item={task}
-                            onClick={onOpenTaskDetailsModal}
+                            onClick={() => onOpenTaskDetailsModal(task.id)}
                         />
                     ))}
             </div>

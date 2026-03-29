@@ -6,9 +6,10 @@ import { TaskCategoryBadge } from '../atoms/TaskCategoryBadge';
 
 interface TaskOrTemplateCardProps {
     item: Template | Task;
-    onEdit?: (id: string) => void;
-    onDelete?: (id: string) => void;
-    onClick?: (id: string) => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
+    onClick?: () => void;
+    onAssign?: () => void;
 }
 
 export function TaskOrTemplateCard({
@@ -28,7 +29,7 @@ export function TaskOrTemplateCard({
                 justifyContent: 'space-between'
             }}
             className={onClick ? styles.selectableCard : undefined}
-            onClick={onClick && (() => onClick(item.id))}
+            onClick={onClick && (() => onClick())}
         >
             <div
                 style={{
@@ -64,10 +65,7 @@ export function TaskOrTemplateCard({
                 <Text size="sm" c="dimmed">
                     {item.steps.length} steps
                 </Text>
-                <CardControls
-                    onEdit={onEdit && (() => onEdit(item.id))}
-                    onDelete={onDelete && (() => onDelete(item.id))}
-                />
+                <CardControls onEdit={onEdit} onDelete={onDelete} />
             </div>
         </Card>
     );

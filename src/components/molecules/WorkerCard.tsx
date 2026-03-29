@@ -16,7 +16,6 @@ export function WorkerCard({
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
 }) {
-    console.log(onClick);
     return (
         <Card
             w={'100%'}
@@ -68,12 +67,12 @@ export function WorkerCard({
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent:
+                            onEdit || onDelete ? 'space-between' : 'center',
                         alignItems: 'center'
                     }}
                 >
                     <WorkerStateBadge state={item.state} />
-
                     <CardControls
                         onEdit={onEdit && (() => onEdit(item.id))}
                         onDelete={onDelete && (() => onDelete(item.id))}

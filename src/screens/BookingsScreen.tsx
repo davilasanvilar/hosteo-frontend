@@ -4,20 +4,19 @@ import {
     Switch,
     TextInput,
     Title,
-    Text
+    useModalsStack
 } from '@mantine/core';
 import { Layout } from '../components/organism/layout/Layout';
 import { BookingForm } from '../components/modals/BookingForm';
 import { useEffect, useState } from 'react';
 import {
-    IconAlertTriangle,
     IconLayoutGrid,
     IconLayoutList,
     IconPlus,
     IconSearch
 } from '@tabler/icons-react';
 import { useCrud } from '../hooks/useCrud';
-import { Booking } from '../types/entities';
+import { Booking, BookingWithAssignments } from '../types/entities';
 import { Page, TableStructure } from '../types/types';
 import { useQuery } from '@tanstack/react-query';
 import { BookingStateBadge } from '../components/atoms/BookingStateBadge';
@@ -30,7 +29,7 @@ import { BookingFormSkeleton } from '../components/skeletons/BookingFormSkeleton
 import { BookingDetailsSkeleton } from '../components/skeletons/BookingDetailsSkeleton';
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
-import { useConfirmModal } from '../hooks/useConfirmModal';
+import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
 import { useEntityModal } from '../components/molecules/EntityModal';
 import { DatePickerInput } from '@mantine/dates';
 import dayjs from 'dayjs';
@@ -70,7 +69,7 @@ export function BookingsScreen() {
     const { search, remove } = useCrud<Booking>('booking');
     const { handleError } = useError();
     const { isTablet } = useScreen();
-    const { openModal } = useConfirmModal();
+    const { openModal } = useConfirmModalWithContext();
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [apartmentSearch, setApartmentSearch] = useState<string>('');
@@ -128,7 +127,7 @@ export function BookingsScreen() {
         });
 
     const { onOpen: onOpenDetailsModal, modalComponent: bookingDetailsModal } =
-        useEntityModal<Booking>({
+        useEntityModal<BookingWithAssignments>({
             entityName: 'booking',
             queryKey: 'bookingToView',
             getTitle: (booking: Booking | undefined) => {
@@ -175,17 +174,8 @@ export function BookingsScreen() {
 
     const openDeleteModal = (id: string) =>
         openModal({
-            title: (
-                <>
-                    <IconAlertTriangle color="error" size={16} />
-                    <Text>Delete booking</Text>
-                </>
-            ),
-            message: (
-                <Text size="sm">
-                    Deleting this booking will remove it permanently.
-                </Text>
-            ),
+            title: 'Delete booking',
+            message: 'Deleting this booking will remove it permanently.',
             color: 'error',
             onConfirm: () => onDeleteBooking(id)
         });
