@@ -1,5 +1,4 @@
 import { Group, Skeleton } from '@mantine/core';
-import { ModalButtons } from '../molecules/ModalButtons';
 
 export function BookingDetailsSkeleton() {
     return (

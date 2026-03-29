@@ -48,23 +48,22 @@ export function AssignmentForm({
         }
     }, [assignment]);
 
-    const [
-        startDateDirty,
-        startDateError,
-        startDateMessage,
-        startDateValidate,
-        setDirtyStartDate
-    ] = useValidator(formFields.startDate, [notEmptyValidator]);
-    const [
-        endDateDirty,
-        endDateError,
-        endDateMessage,
-        endDateValidate,
-        setDirtyEndDate
-    ] = useValidator(formFields.endDate, [notEmptyValidator]);
+    const { error: startDateError, validate: startDateValidate } = useValidator(
+        formFields.startDate,
+        [notEmptyValidator]
+    );
+    const { error: endDateError, validate: endDateValidate } = useValidator(
+        formFields.endDate,
+        [notEmptyValidator]
+    );
 
-    const [stateDirty, stateError, stateMessage, stateValidate, setDirtyState] =
-        useValidator(formFields.state, [notEmptyValidator]);
+    const {
+        dirty: stateDirty,
+        activateDirty: setDirtyState,
+        error: stateError,
+        validate: stateValidate,
+        message: stateMessage
+    } = useValidator(formFields.state, [notEmptyValidator]);
 
     const createAssignment = async () => {
         if (!task) return;

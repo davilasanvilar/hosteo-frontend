@@ -1,4 +1,4 @@
-import { Group, Skeleton, TextInput } from '@mantine/core';
+import { Group, Skeleton } from '@mantine/core';
 import { ModalButtons } from '../molecules/ModalButtons';
 
 export function BookingFormSkeleton() {

@@ -1,4 +1,4 @@
-import { Button, Select, Tabs, Text, TextInput } from '@mantine/core';
+import { Button, Select, Tabs, TextInput } from '@mantine/core';
 import { ApartmentWithTasks, Task } from '../../types/entities';
 import { useEffect, useState } from 'react';
 import { notEmptyValidator, useValidator } from '../../hooks/useValidator';
@@ -18,7 +18,7 @@ import { ApartmentStateBadge } from '../atoms/ApartmentStateBadge';
 import { useScreen } from '../../hooks/useScreen';
 import { ModalButtons } from '../molecules/ModalButtons';
 import { IconPlus } from '@tabler/icons-react';
-import { useEntityModal } from '../molecules/EntityModal';
+import { useEntityModal } from '../../hooks/useEntityModal';
 import { TaskOrTemplateForm } from './TaskOrTemplateForm';
 import { TaskOrTemplateFormSkeleton } from '../skeletons/TaskOrTemplateFormSkeleton';
 import { TasksSection } from '../molecules/TasksSection';
@@ -71,8 +71,13 @@ export function ApartmentForm({
 
     const [section, setSection] = useState<string | null>('apartmentInfo');
 
-    const [nameDirty, nameError, nameMessage, nameValidate, setDirtyName] =
-        useValidator(formFields.name, [notEmptyValidator]);
+    const {
+        dirty: nameDirty,
+        activateDirty: setDirtyName,
+        error: nameError,
+        message: nameMessage,
+        validate: nameValidate
+    } = useValidator(formFields.name, [notEmptyValidator]);
 
     const { create, update: updateApartment } =
         useCrud<ApartmentWithTasks>('apartment');

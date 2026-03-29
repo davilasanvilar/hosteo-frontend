@@ -1,13 +1,7 @@
-import {
-    ActionIcon,
-    Button,
-    Textarea,
-    TextInput,
-    useMantineTheme
-} from '@mantine/core';
+import { ActionIcon, Textarea, useMantineTheme } from '@mantine/core';
 import { CardControls } from './CardControls';
 import { useState } from 'react';
-import { IconCheck, IconCross, IconX } from '@tabler/icons-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 
 export function TaskStep({
     index,
@@ -21,7 +15,7 @@ export function TaskStep({
     onDelete?: (index: number) => void;
 }) {
     const theme = useMantineTheme();
-    const [isEditing, setIsEditing] = useState<Boolean>(false);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
     const [newValue, setNewValue] = useState<string>(value);
 
     const handleEdit = () => {

@@ -2,7 +2,6 @@ import { Button, TextInput } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { IconPlus, IconSearch } from '@tabler/icons-react'; // Removed IconLayoutGrid, IconLayoutList as layout is fixed
 import { useState, useEffect } from 'react';
-import { Text } from '@mantine/core';
 
 import { Layout } from '../components/organism/layout/Layout';
 import { TopControls } from '../components/molecules/TopControls';
@@ -13,13 +12,13 @@ import { useCrud } from '../hooks/useCrud';
 import { useError } from '../hooks/useError';
 import { useScreen } from '../hooks/useScreen';
 import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
-import { useEntityModal } from '../components/molecules/EntityModal';
+import { useEntityModal } from '../hooks/useEntityModal';
 import { Template } from '../types/entities';
 import { Page, TableStructure } from '../types/types';
 import { TaskOrTemplateForm } from '../components/modals/TaskOrTemplateForm';
 import { TaskOrTemplateFormSkeleton } from '../components/skeletons/TaskOrTemplateFormSkeleton';
 import { TaskOrTemplateCardSkeleton } from '../components/molecules/TaskOrTemplateCardSkeleton';
-import { userTaskOrTemplateDetailsModal } from '../components/organism/TaskOrTemplateDetailsModal';
+import { useTaskOrTemplateDetailsModal } from '../components/organism/TaskOrTemplateDetailsModal';
 
 const tableStructure: TableStructure<Template> = {
     headers: [],
@@ -74,7 +73,7 @@ export function TemplatesScreen() {
         });
 
     const { onOpenDetailsModal, detailsModal } =
-        userTaskOrTemplateDetailsModal('template');
+        useTaskOrTemplateDetailsModal('template');
 
     const onDeleteTemplate = async (id: string) => {
         await remove(id);
@@ -84,12 +83,7 @@ export function TemplatesScreen() {
     const openDeleteModal = (id: string) =>
         openModal({
             title: 'Delete template',
-            message: (
-                <Text size="sm">
-                    Are you sure you want to delete this template? This action
-                    cannot be undone.
-                </Text>
-            ),
+            message: `Are you sure you want to delete this template? This action cannot be undone.`,
             color: 'red',
             onConfirm: () => onDeleteTemplate(id)
         });

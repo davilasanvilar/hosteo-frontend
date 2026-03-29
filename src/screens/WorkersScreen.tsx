@@ -1,7 +1,7 @@
 import { Button, TextInput } from '@mantine/core';
 import { Layout } from '../components/organism/layout/Layout';
 import { useEffect, useState } from 'react';
-import { IconAlertTriangle, IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { useCrud } from '../hooks/useCrud';
 import { Worker } from '../types/entities';
 import { Page } from '../types/types';
@@ -14,8 +14,7 @@ import { DataTable } from '../components/organism/DataTable';
 import { WorkerCard } from '../components/molecules/WorkerCard';
 import { WorkerCardSkeleton } from '../components/molecules/WorkerCardSkeleton';
 import { WorkerForm } from '../components/modals/WorkerForm';
-import { Text } from '@mantine/core';
-import { useEntityModal } from '../components/molecules/EntityModal';
+import { useEntityModal } from '../hooks/useEntityModal';
 import { WorkerFormSkeleton } from '../components/skeletons/WorkerFormSkeleton';
 
 export function WorkersScreen() {

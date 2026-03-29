@@ -1,11 +1,4 @@
-import {
-    Button,
-    MultiSelect,
-    Switch,
-    TextInput,
-    Title,
-    useModalsStack
-} from '@mantine/core';
+import { Button, MultiSelect, Switch, TextInput, Title } from '@mantine/core';
 import { Layout } from '../components/organism/layout/Layout';
 import { BookingForm } from '../components/modals/BookingForm';
 import { useEffect, useState } from 'react';
@@ -30,7 +23,7 @@ import { BookingDetailsSkeleton } from '../components/skeletons/BookingDetailsSk
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
 import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
-import { useEntityModal } from '../components/molecules/EntityModal';
+import { useEntityModal } from '../hooks/useEntityModal';
 import { DatePickerInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { conf } from '../../conf';

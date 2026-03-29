@@ -37,26 +37,33 @@ export function RegisterScreen() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [repeatPassword, setRepeatPassword] = useState<string>('');
-    const [passwordVisible, setPasswordVisible] = useState<Boolean>(false);
+    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
     const [repeatPasswordVisible, setRepeatPasswordVisible] =
-        useState<Boolean>(false);
+        useState<boolean>(false);
 
-    const [
-        usernameDirty,
-        usernameError,
-        usernameMessage,
-        usernameValidate,
-        setDirtyUsername
-    ] = useValidator(username, [notEmptyValidator]);
-    const [emailDirty, emailError, emailMessage, emailValidate, setDirtyEmail] =
-        useValidator(email, [notEmptyValidator, emailValidator]);
-    const [
-        passwordDirty,
-        passwordError,
-        passwordMessage,
-        passwordValidate,
-        setDirtyPassword
-    ] = useValidator(password, [
+    const {
+        dirty: usernameDirty,
+        error: usernameError,
+        message: usernameMessage,
+        validate: usernameValidate,
+        activateDirty: setDirtyUsername
+    } = useValidator(username, [notEmptyValidator]);
+
+    const {
+        dirty: emailDirty,
+        error: emailError,
+        message: emailMessage,
+        validate: emailValidate,
+        activateDirty: setDirtyEmail
+    } = useValidator(email, [notEmptyValidator, emailValidator]);
+
+    const {
+        dirty: passwordDirty,
+        error: passwordError,
+        message: passwordMessage,
+        validate: passwordValidate,
+        activateDirty: setDirtyPassword
+    } = useValidator(password, [
         notEmptyValidator,
         minLength8Validator,
         upperLowerCaseValidator

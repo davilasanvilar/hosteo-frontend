@@ -28,10 +28,18 @@ export function upperLowerCaseValidator(input: string): string {
         : 'The field should contain upper and lower case';
 }
 
+export type UseValidatorReturn = {
+    dirty: boolean;
+    error: boolean;
+    message: string;
+    validate: () => boolean;
+    activateDirty: () => void;
+};
+
 export const useValidator = (
     input: string,
     validators: { (input: string): string }[]
-): [boolean, boolean, string, { (): boolean }, { (): void }] => {
+): UseValidatorReturn => {
     const [dirty, setDirty] = useState(false);
     const [error, setError] = useState(false);
     const [message, setMessage] = useState('');
@@ -64,5 +72,5 @@ export const useValidator = (
         }
         return true;
     };
-    return [dirty, error, message, validate, activateDirty];
+    return { dirty, error, message, validate, activateDirty };
 };

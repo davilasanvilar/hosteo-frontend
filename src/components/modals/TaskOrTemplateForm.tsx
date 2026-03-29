@@ -58,8 +58,13 @@ export function TaskOrTemplateForm({
         );
     }, [entity]);
 
-    const [nameDirty, nameError, nameMessage, nameValidate, setDirtyName] =
-        useValidator(formFields.name, [notEmptyValidator]);
+    const {
+        dirty: nameDirty,
+        activateDirty: setDirtyName,
+        error: nameError,
+        message: nameMessage,
+        validate: nameValidate
+    } = useValidator(formFields.name, [notEmptyValidator]);
 
     const createEntity = async () => {
         if (apartmentId) {

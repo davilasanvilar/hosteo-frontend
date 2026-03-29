@@ -6,7 +6,7 @@ import { ApartmentStateBadge } from '../atoms/ApartmentStateBadge';
 import dayjs from 'dayjs';
 import { conf } from '../../../conf';
 import { IconLogin, IconLogout } from '@tabler/icons-react';
-import { useEntityModal } from '../molecules/EntityModal';
+import { useEntityModal } from '../../hooks/useEntityModal';
 import { AssignmentForm } from './AssignmentForm';
 import { WorkerCardSkeleton } from '../molecules/WorkerCardSkeleton';
 import { useState } from 'react';

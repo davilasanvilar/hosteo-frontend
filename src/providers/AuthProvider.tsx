@@ -4,9 +4,6 @@ import { ApiError, ApiResponse } from '../types/types';
 import { useQuery } from '@tanstack/react-query';
 import StatusCode from 'status-code-enum';
 import { useReactQuery } from '../hooks/useReactQuery';
-import { ErrorCode } from '../types/enums';
-import { showNotificationError } from '../utils/notifUtils';
-import { useError } from '../hooks/useError';
 
 export interface AuthContext {
     user?: User;
@@ -28,7 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authTokenRef = useRef<string | undefined>(undefined);
     const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
     let refreshingPromise: Promise<string> | null = null;
-    const { handleError } = useError();
 
     const { queryClient } = useReactQuery();
 

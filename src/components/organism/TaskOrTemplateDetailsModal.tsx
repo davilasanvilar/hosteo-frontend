@@ -2,10 +2,10 @@ import { Text, Title } from '@mantine/core';
 import { Task, Template } from '../../types/entities';
 import { TaskOrTemplateDetailsSkeleton } from '../skeletons/TaskOrTemplateDetailsSkeleton';
 import { TaskCategoryBadge } from '../atoms/TaskCategoryBadge';
-import { useEntityModal } from '../molecules/EntityModal';
+import { useEntityModal } from '../../hooks/useEntityModal';
 import { TaskOrTemplateDetails } from '../modals/TaskOrTemplateDetails';
 
-export function userTaskOrTemplateDetailsModal(type: 'task' | 'template') {
+export function useTaskOrTemplateDetailsModal(type: 'task' | 'template') {
     const { onOpen: onOpenDetailsModal, modalComponent: detailsModal } =
         useEntityModal<Template>({
             entityName: type,

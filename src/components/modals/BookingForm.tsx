@@ -97,33 +97,39 @@ export function BookingForm({
     }, [nameSearch]);
 
     // Validators
-    const [nameDirty, nameError, nameMessage, nameValidate, setDirtyName] =
-        useValidator(formFields.name, [notEmptyValidator]);
-    const [
-        startDateDirty,
-        startDateError,
-        startDateMessage,
-        startDateValidate,
-        setDirtyStartDate
-    ] = useValidator(formFields.startDate, [notEmptyValidator]);
-    const [
-        endDateDirty,
-        endDateError,
-        endDateMessage,
-        endDateValidate,
-        setDirtyEndDate
-    ] = useValidator(formFields.endDate, [notEmptyValidator]);
+    const {
+        dirty: nameDirty,
+        error: nameError,
+        message: nameMessage,
+        validate: nameValidate,
+        activateDirty: setDirtyName
+    } = useValidator(formFields.name, [notEmptyValidator]);
 
-    const [
-        sourceDirty,
-        sourceError,
-        sourceMessage,
-        sourceValidate,
-        setDirtySource
-    ] = useValidator(formFields.source, [notEmptyValidator]);
+    const { error: startDateError, validate: startDateValidate } = useValidator(
+        formFields.startDate,
+        [notEmptyValidator]
+    );
 
-    const [stateDirty, stateError, stateMessage, stateValidate, setDirtyState] =
-        useValidator(formFields.state, [notEmptyValidator]);
+    const { error: endDateError, validate: endDateValidate } = useValidator(
+        formFields.endDate,
+        [notEmptyValidator]
+    );
+
+    const {
+        dirty: sourceDirty,
+        activateDirty: setDirtySource,
+        error: sourceError,
+        validate: sourceValidate,
+        message: sourceMessage
+    } = useValidator(formFields.source, [notEmptyValidator]);
+
+    const {
+        dirty: stateDirty,
+        activateDirty: setDirtyState,
+        error: stateError,
+        validate: stateValidate,
+        message: stateMessage
+    } = useValidator(formFields.state, [notEmptyValidator]);
 
     const createBooking = async () => {
         await create(formFieldsToCreateBookingForm(formFields));
