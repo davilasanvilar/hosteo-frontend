@@ -35,6 +35,12 @@ const LazyTemplatesScreen = lazy(() =>
     }))
 );
 
+const LazySchedulerScreen = lazy(() =>
+    import('./screens/SchedulerScreen').then((module) => ({
+        default: module.SchedulerScreen
+    }))
+);
+
 function Body() {
     const authInfo = useAuth();
 
@@ -87,6 +93,14 @@ function Body() {
                         element={
                             <Suspense fallback={<LoadingScreen />}>
                                 <LazyTemplatesScreen />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/scheduler"
+                        element={
+                            <Suspense fallback={<LoadingScreen />}>
+                                <LazySchedulerScreen />
                             </Suspense>
                         }
                     />

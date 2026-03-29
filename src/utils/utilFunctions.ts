@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Address } from '../types/entities';
 import { ApiError, ApiResponse } from '../types/types';
 
@@ -20,3 +21,11 @@ export const addressToString = (address: Address | undefined) => {
     }
     return `${address.street ? address.street + ',' : ''} ${address.zipCode ? address.zipCode : ''} ${address.city ? address.city : ''} ${address.country ? `(${address.country})` : ''}`;
 };
+
+export function getStartOfWeek(date: string | null) {
+    return dayjs(date).startOf('week').toISOString();
+}
+
+export function getEndOfWeek(date: string | null) {
+    return dayjs(date).endOf('week').toISOString();
+}

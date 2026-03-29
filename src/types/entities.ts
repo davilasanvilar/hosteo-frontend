@@ -109,6 +109,14 @@ export interface BookingScheduler {
     apartmentReady: boolean;
 }
 
+export interface SchedulerInfo {
+    bookings: BookingScheduler[];
+    redAlertBookings: BookingScheduler[];
+    yellowAlertBookings: BookingScheduler[];
+    assignments: Assignment[];
+    extraTasks: Task[];
+}
+
 export interface ImpBooking {
     apartment: Apartment;
     startDate: Date;

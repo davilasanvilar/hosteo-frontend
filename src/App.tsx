@@ -13,8 +13,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { ConfirmModalProvider } from './providers/ConfirmModalProvider';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
+import 'dayjs/locale/en-gb';
 
 dayjs.extend(customParseFormat);
+dayjs.locale('en-gb');
 
 function App() {
     return (
