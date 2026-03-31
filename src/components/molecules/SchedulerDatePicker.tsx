@@ -41,7 +41,16 @@ export function SchedulerDatePicker({
                     gap: '1rem'
                 }}
             >
-                <ActionIcon variant="transparent">
+                <ActionIcon
+                    variant="transparent"
+                    onClick={() =>
+                        setDate(
+                            getStartOfWeek(
+                                dayjs(date).subtract(1, 'week').toISOString()
+                            )
+                        )
+                    }
+                >
                     <IconChevronLeft />
                 </ActionIcon>
                 <Text style={{ textTransform: 'uppercase' }}>
@@ -49,7 +58,16 @@ export function SchedulerDatePicker({
                         getEndOfWeek(date)
                     ).format(conf.dateWithSpaces)}`}
                 </Text>
-                <ActionIcon variant="transparent">
+                <ActionIcon
+                    variant="transparent"
+                    onClick={() =>
+                        setDate(
+                            getStartOfWeek(
+                                dayjs(date).add(1, 'week').toISOString()
+                            )
+                        )
+                    }
+                >
                     <IconChevronRight />
                 </ActionIcon>
             </div>

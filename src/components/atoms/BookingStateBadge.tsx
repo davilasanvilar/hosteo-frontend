@@ -4,10 +4,12 @@ import { ExtendedCustomColors } from '../../mantine';
 
 export function BookingStateBadge({
     state,
-    noBg
+    noBg,
+    size
 }: {
     state: BookingState;
     noBg?: boolean;
+    size?: 'xs' | 'sm' | 'md' | 'lg';
 }) {
     const getChipColor = (): ExtendedCustomColors => {
         switch (state) {
@@ -28,7 +30,7 @@ export function BookingStateBadge({
         <Badge
             style={{ overflow: 'visible' }}
             variant={noBg ? 'transparent' : 'light'}
-            size="md"
+            size={size || 'md'}
             color={getChipColor()}
         >
             {state}

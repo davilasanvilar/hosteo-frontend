@@ -59,6 +59,16 @@ export interface Task extends BaseEntity {
     steps: string[];
 }
 
+
+export interface TaskWithApartment extends BaseEntity {
+    name: string;
+    category: CategoryEnum;
+    duration: number;
+    extra: boolean;
+    steps: string[];
+    apartment: Apartment;
+}
+
 export interface Template extends BaseEntity {
     name: string;
     category: CategoryEnum;
@@ -79,7 +89,7 @@ export interface Worker extends BaseEntity {
 }
 
 export interface Assignment extends BaseEntity {
-    task: Task;
+    task: TaskWithApartment;
     startDate: number;
     endDate: number;
     worker: Worker;
@@ -107,6 +117,13 @@ export interface BookingScheduler {
     unassignedTasks: Task[];
     hasUnfinishedTasks: boolean;
     apartmentReady: boolean;
+}
+
+export interface SchedulerItem {
+    type: 'booking' | 'assignment';
+    item: BookingScheduler | Assignment;
+    isStart: boolean;
+    date: number
 }
 
 export interface SchedulerInfo {

@@ -28,7 +28,7 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
             colors: {
                 background: [
                     '#f5f5f5',
-                    '#f5f5f5',
+                    'hsla(0, 0%, 92%, 1.00)',
                     '#f5f5f5',
                     '#f5f5f5',
                     '#f5f5f5',

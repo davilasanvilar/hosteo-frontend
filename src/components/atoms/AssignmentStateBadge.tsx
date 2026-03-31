@@ -4,10 +4,12 @@ import { ExtendedCustomColors } from '../../mantine';
 
 export function AssignmentStateBadge({
     state,
-    noBg
+    noBg,
+    size
 }: {
     state: AssignmentState;
     noBg?: boolean;
+    size?: 'sm' | 'md' | 'lg';
 }) {
     const getChipColor = (): ExtendedCustomColors => {
         switch (state) {
@@ -24,7 +26,7 @@ export function AssignmentStateBadge({
         <Badge
             style={{ overflow: 'visible' }}
             variant={noBg ? 'transparent' : 'light'}
-            size="md"
+            size={size || 'md'}
             color={getChipColor()}
         >
             {state}
