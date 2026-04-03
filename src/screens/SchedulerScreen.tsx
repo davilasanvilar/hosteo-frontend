@@ -4,7 +4,7 @@ import { Scheduler } from '../components/organism/Scheduler';
 
 export function SchedulerScreen() {
     return (
-        <Layout>
+        <Layout customStyles={{ maxWidth: '90rem' }}>
             <Scheduler />
         </Layout>
     );

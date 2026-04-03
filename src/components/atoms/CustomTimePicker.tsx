@@ -28,7 +28,9 @@ export function CustomTimePicker({
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div
+            style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+        >
             <div
                 style={{
                     display: 'flex',

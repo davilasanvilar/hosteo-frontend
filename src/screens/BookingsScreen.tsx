@@ -253,8 +253,18 @@ export function BookingsScreen() {
                         variant="filled"
                         onChange={() => setCardViewMode(!cardViewMode)}
                         checked={cardViewMode}
-                        onLabel={<IconLayoutGrid size={16} color="white" />}
-                        offLabel={<IconLayoutList size={16} color="white" />}
+                        onLabel={
+                            <IconLayoutGrid
+                                size={16}
+                                color="var(--mantine-color-background-0)"
+                            />
+                        }
+                        offLabel={
+                            <IconLayoutList
+                                size={16}
+                                color="var(--mantine-color-background-0)"
+                            />
+                        }
                     />
                 }
                 addButton={

@@ -8,6 +8,7 @@ import {
     Language,
     WorkerState
 } from './enums';
+import { AssignmentFormFields } from './forms';
 
 export interface Address {
     street?: string;
@@ -120,8 +121,8 @@ export interface BookingScheduler {
 }
 
 export interface SchedulerItem {
-    type: 'booking' | 'assignment';
-    item: BookingScheduler | Assignment;
+    type: 'booking' | 'assignment' | 'incompleteAssignment';
+    item: BookingScheduler | Assignment | AssignmentFormFields;
     isStart: boolean;
     date: number
 }

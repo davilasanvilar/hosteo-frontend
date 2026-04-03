@@ -31,7 +31,8 @@ export function SchedulerDatePicker({
             style={{
                 display: 'flex',
                 gap: '1rem',
-                alignItems: 'center'
+                alignItems: 'center',
+                width: '20rem'
             }}
         >
             <div

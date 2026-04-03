@@ -1,25 +1,26 @@
-import { Assignment } from '../../types/entities';
 import { Card, Text, Title } from '@mantine/core';
-import styles from '../styles/DataTable.module.css';
 import dayjs from 'dayjs';
 import { conf } from '../../../conf';
 import { AssignmentStateBadge } from '../atoms/AssignmentStateBadge';
+import { AssignmentFormFields } from '../../types/forms';
+import { useSchedulerContext } from '../../hooks/useSchedulerContext';
 
-export function SchedulerAssignmentCard({
-    item,
-    onClick
+export function IncompleteAssignmentCard({
+    formFields
 }: {
-    item: Assignment;
-    onClick?: (id: string) => void;
+    formFields: AssignmentFormFields;
 }) {
+    const { taskToAssign, bookingToAssign, assignedWorker } =
+        useSchedulerContext();
     return (
         <Card
             w={'100%'}
-            className={onClick ? styles.selectableCard : undefined}
-            onClick={onClick && (() => onClick(item.id))}
             padding="0"
             radius="md"
             shadow="sm"
+            style={{
+                border: `3px solid var(--mantine-color-primary-6)`
+            }}
         >
             <Card.Section
                 style={{
@@ -56,7 +57,7 @@ export function SchedulerAssignmentCard({
                         fw={'lighter'}
                         c="black"
                     >
-                        {item.task.apartment.name}
+                        {bookingToAssign?.booking.apartment.name}
                     </Title>
                 </div>
             </Card.Section>
@@ -77,10 +78,10 @@ export function SchedulerAssignmentCard({
                     }}
                 >
                     <Text size="sm" lineClamp={1}>
-                        {item.task.name}
+                        {taskToAssign?.name}
                     </Text>
                     <Text size="xs" lineClamp={1}>
-                        {item.worker.name}
+                        {assignedWorker?.name}
                     </Text>
                     <div
                         style={{
@@ -90,11 +91,16 @@ export function SchedulerAssignmentCard({
                         }}
                     >
                         <Text size="sm" fw={'bold'}>
-                            {dayjs.unix(item.startDate).format(conf.timeFormat)}
+                            {dayjs(formFields.startDate).format(
+                                conf.timeFormat
+                            )}
                             {' - '}
-                            {dayjs.unix(item.endDate).format(conf.timeFormat)}
+                            {dayjs(formFields.endDate).format(conf.timeFormat)}
                         </Text>
-                        <AssignmentStateBadge state={item.state} size="sm" />
+                        <AssignmentStateBadge
+                            state={formFields.state}
+                            size="sm"
+                        />
                     </div>
                 </div>
             </Card.Section>

@@ -14,7 +14,6 @@ export function TaskStep({
     onEdit?: (index: number, value: string) => void;
     onDelete?: (index: number) => void;
 }) {
-    const theme = useMantineTheme();
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [newValue, setNewValue] = useState<string>(value);
 
@@ -29,8 +28,8 @@ export function TaskStep({
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
             <span
                 style={{
-                    backgroundColor: theme.colors.primary[5],
-                    color: 'white',
+                    backgroundColor: 'var(--mantine-color-primary-5)',
+                    color: 'var(--mantine-color-white)',
                     borderRadius: '100%',
                     width: '1.5rem',
                     fontWeight: 'bold',

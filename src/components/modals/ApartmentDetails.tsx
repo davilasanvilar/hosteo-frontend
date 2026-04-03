@@ -4,7 +4,7 @@ import { addressToString } from '../../utils/utilFunctions';
 import { PlatformIcon } from '../atoms/PlatformIcon';
 import { useScreen } from '../../hooks/useScreen';
 import { TaskOrTemplateCard } from '../molecules/TaskOrTemplateCard';
-import { userTaskOrTemplateDetailsModal } from '../organism/TaskOrTemplateDetailsModal';
+import { useTaskOrTemplateDetailsModal } from '../organism/TaskOrTemplateDetailsModal';
 
 export function ApartmentDetails({
     entity: apartment
@@ -15,7 +15,7 @@ export function ApartmentDetails({
     const {
         onOpenDetailsModal: onOpenTaskDetailsModal,
         detailsModal: taskDetailsModal
-    } = userTaskOrTemplateDetailsModal('task');
+    } = useTaskOrTemplateDetailsModal('task');
 
     return (
         <div

@@ -1,9 +1,12 @@
 import { ReactNode, useMemo } from 'react';
 import {
+    Accordion,
     Badge,
     Button,
+    Card,
     Checkbox,
     createTheme,
+    Drawer,
     Fieldset,
     Input,
     MantineProvider,
@@ -27,9 +30,9 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
         return createTheme({
             colors: {
                 background: [
-                    '#f5f5f5',
-                    'hsla(0, 0%, 92%, 1.00)',
-                    '#f5f5f5',
+                    'hsla(0, 0%, 99%, 1.00)',
+                    'hsla(0, 0%, 98%, 1.00)',
+                    'hsla(0, 0%, 96%, 1.00)',
                     '#f5f5f5',
                     '#f5f5f5',
                     '#f5f5f5',
@@ -128,7 +131,7 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                         input: {
                             '--input-bg':
                                 props.variant === 'outlined'
-                                    ? 'white'
+                                    ? 'var(--mantine-color-background-0)'
                                     : 'var(--mantine-color-gray-2)',
                             '--input-bd':
                                 props.variant === 'outlined'
@@ -222,7 +225,35 @@ export const LibraryProvider = ({ children }: { children: ReactNode }) => {
                         }
                     }
                 }),
-                Table: Table.extend({})
+                Table: Table.extend({}),
+                Drawer: Drawer.extend({
+                    styles: {
+                        content: {
+                            scrollbarGutter: 'stable',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            backgroundColor: 'var(--mantine-color-background-1)'
+                        },
+                        header: {
+                            backgroundColor: 'var(--mantine-color-background-1)'
+                        }
+                    }
+                }),
+                Accordion: Accordion.extend({
+                    styles: {
+                        control: {
+                            borderRadius: 'var(--mantine-radius-md)'
+                        }
+                    }
+                }),
+                Card: Card.extend({
+                    styles: {
+                        root: {
+                            borderRadius: 'var(--mantine-radius-md)',
+                            boxShadow: 'var(--mantine-shadow-sm)'
+                        }
+                    }
+                })
             }
         });
     }, [isTablet]);

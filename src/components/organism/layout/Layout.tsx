@@ -7,10 +7,12 @@ import { useScreen } from '../../../hooks/useScreen';
 
 export function Layout({
     children,
-    isPublic
+    isPublic,
+    customStyles
 }: {
     children: React.ReactNode;
     isPublic?: boolean;
+    customStyles?: React.CSSProperties;
 }) {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -19,10 +21,14 @@ export function Layout({
     return isPublic || user ? (
         //Public Layout
         isPublic ? (
-            <main className={styles.publicMain}>{children}</main>
+            <main className={styles.publicMain} style={customStyles}>
+                {children}
+            </main>
         ) : (
             //Private layout
-            <main className={styles.privateMain}>{children}</main>
+            <main className={styles.privateMain} style={customStyles}>
+                {children}
+            </main>
         )
     ) : (
         //Not logged in layout

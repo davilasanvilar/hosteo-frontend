@@ -7,13 +7,23 @@ import {
     SchedulerItem
 } from '../../types/entities';
 import { SchedulerAssignmentCard } from './SchedulerAssignmentCard';
+import { AssignmentFormFields } from '../../types/forms';
+import { IncompleteAssignmentCard } from './IncompleteAssignmentCard.tsx';
 
 export function SchedulerDay({
     date,
-    items
+    items,
+    onClick,
+    disabled,
+    isSelected,
+    onAssignmentClick
 }: {
     date: string;
     items: SchedulerItem[];
+    onClick?: () => void;
+    disabled?: boolean;
+    isSelected?: boolean;
+    onAssignmentClick?: (assignment: Assignment) => void;
 }) {
     return (
         <div
@@ -25,8 +35,13 @@ export function SchedulerDay({
                 flex: 1,
                 justifyContent: 'center',
                 minWidth: '170px',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                filter: disabled ? 'brightness(0.5)' : 'none',
+                pointerEvents: disabled ? 'none' : 'auto',
+                cursor:
+                    disabled || onClick === undefined ? 'default' : 'pointer'
             }}
+            onClick={onClick}
         >
             <div
                 style={{
@@ -47,14 +62,14 @@ export function SchedulerDay({
             </div>
             <div
                 style={{
-                    backgroundColor: 'var(--mantine-color-background-1)',
+                    backgroundColor: 'var(--mantine-color-background-2)',
                     height: '100%',
-                    borderRadius: 'var(--mantine-radius-md)',
-                    padding: '0.5rem',
+                    padding: '0.25rem',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '0.5rem',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    borderRadius: 'var(--mantine-radius-md)'
                 }}
             >
                 {items.map((item) => {
@@ -65,14 +80,26 @@ export function SchedulerDay({
                                 key={booking.booking.id}
                                 item={booking.booking}
                                 isStart={item.isStart}
+                                alert={booking.alert}
                             />
                         );
                     }
-                    const assignment = item.item as Assignment;
+                    if (item.type === 'assignment') {
+                        const assignment = item.item as Assignment;
+                        return (
+                            <SchedulerAssignmentCard
+                                key={assignment.id}
+                                item={assignment}
+                                onClick={() => onAssignmentClick?.(assignment)}
+                            />
+                        );
+                    }
+                    const incompleteAssignment =
+                        item.item as AssignmentFormFields;
                     return (
-                        <SchedulerAssignmentCard
-                            key={assignment.id}
-                            item={assignment}
+                        <IncompleteAssignmentCard
+                            key={'incomplete_assignment'}
+                            formFields={incompleteAssignment}
                         />
                     );
                 })}

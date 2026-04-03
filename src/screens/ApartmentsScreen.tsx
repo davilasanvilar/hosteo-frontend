@@ -23,10 +23,10 @@ import { ApartmentCardSkeleton } from '../components/molecules/ApartmentCardSkel
 import { ApartmentDetails } from '../components/modals/ApartmentDetails';
 import { useScreen } from '../hooks/useScreen';
 import { TopControls } from '../components/molecules/TopControls';
-import { useEntityModal } from '../components/molecules/EntityModal';
 import { ApartmentFormSkeleton } from '../components/skeletons/ApartmentFormSkeleton';
 import { ApartmentDetailsSkeleton } from '../components/skeletons/ApartmentDetailsSkeleton';
 import { useConfirmModalWithContext } from '../hooks/useConfirmModalWithContext';
+import { useEntityModal } from '../hooks/useEntityModal';
 
 const tableStructure: TableStructure<ApartmentWithTasks> = {
     headers: [
@@ -213,8 +213,18 @@ export function ApartmentsScreen() {
                         variant="filled"
                         onChange={() => setCardViewMode(!cardViewMode)}
                         checked={cardViewMode}
-                        onLabel={<IconLayoutGrid size={16} color="white" />}
-                        offLabel={<IconLayoutList size={16} color="white" />}
+                        onLabel={
+                            <IconLayoutGrid
+                                size={16}
+                                color="var(--mantine-color-background-0)"
+                            />
+                        }
+                        offLabel={
+                            <IconLayoutList
+                                size={16}
+                                color="var(--mantine-color-background-0)"
+                            />
+                        }
                     />
                 }
                 addButton={
