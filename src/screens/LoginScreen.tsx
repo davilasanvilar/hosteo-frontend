@@ -21,20 +21,20 @@ export function LoginScreen() {
     const [password, setPassword] = useState<string>('');
     const [rememberMe, setRememberMe] = useState<boolean>(false);
 
-    const [
-        usernameDirty,
-        usernameError,
-        usernameMessage,
-        usernameValidate,
-        setDirtyUsername
-    ] = useValidator(username, [notEmptyValidator]);
-    const [
-        passwordDirty,
-        passwordError,
-        passwordMessage,
-        passwordValidate,
-        setDirtyPassword
-    ] = useValidator(password, [notEmptyValidator]);
+    const {
+        dirty: usernameDirty,
+        error: usernameError,
+        message: usernameMessage,
+        validate: usernameValidate,
+        activateDirty: setDirtyUsername
+    } = useValidator(username, [notEmptyValidator]);
+    const {
+        dirty: passwordDirty,
+        error: passwordError,
+        message: passwordMessage,
+        validate: passwordValidate,
+        activateDirty: setDirtyPassword
+    } = useValidator(password, [notEmptyValidator]);
 
     const login = async () => {
         const usernameValid = usernameValidate();

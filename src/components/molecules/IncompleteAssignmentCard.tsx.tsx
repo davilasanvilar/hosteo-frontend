@@ -2,16 +2,13 @@ import { Card, Text, Title } from '@mantine/core';
 import dayjs from 'dayjs';
 import { conf } from '../../../conf';
 import { AssignmentStateBadge } from '../atoms/AssignmentStateBadge';
-import { AssignmentFormFields } from '../../types/forms';
-import { useSchedulerContext } from '../../hooks/useSchedulerContext';
+import { AssignmentInfoForScheduler } from '../../types/entities';
 
 export function IncompleteAssignmentCard({
-    formFields
+    assignment
 }: {
-    formFields: AssignmentFormFields;
+    assignment: AssignmentInfoForScheduler;
 }) {
-    const { taskToAssign, bookingToAssign, assignedWorker } =
-        useSchedulerContext();
     return (
         <Card
             w={'100%'}
@@ -57,7 +54,7 @@ export function IncompleteAssignmentCard({
                         fw={'lighter'}
                         c="black"
                     >
-                        {bookingToAssign?.booking.apartment.name}
+                        {assignment?.apartment?.name ?? ''}
                     </Title>
                 </div>
             </Card.Section>
@@ -78,10 +75,10 @@ export function IncompleteAssignmentCard({
                     }}
                 >
                     <Text size="sm" lineClamp={1}>
-                        {taskToAssign?.name}
+                        {assignment?.task?.name ?? ''}
                     </Text>
                     <Text size="xs" lineClamp={1}>
-                        {assignedWorker?.name}
+                        {assignment?.worker?.name ?? ''}
                     </Text>
                     <div
                         style={{
@@ -90,17 +87,19 @@ export function IncompleteAssignmentCard({
                             alignItems: 'center'
                         }}
                     >
-                        <Text size="sm" fw={'bold'}>
-                            {dayjs(formFields.startDate).format(
+                        <Text size="sm" fw={'ld'}>
+                            {dayjs(assignment.startDate).format(
                                 conf.timeFormat
                             )}
                             {' - '}
-                            {dayjs(formFields.endDate).format(conf.timeFormat)}
+                            {dayjs(assignment.endDate).format(conf.timeFormat)}
                         </Text>
-                        <AssignmentStateBadge
-                            state={formFields.state}
-                            size="sm"
-                        />
+                        {assignment.state && (
+                            <AssignmentStateBadge
+                                state={assignment.state}
+                                size="sm"
+                            />
+                        )}
                     </div>
                 </div>
             </Card.Section>

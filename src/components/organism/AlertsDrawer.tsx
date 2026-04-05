@@ -1,5 +1,5 @@
 import { Accordion, Drawer } from '@mantine/core';
-import { BookingScheduler } from '../../types/entities';
+import { BookingScheduler, Task } from '../../types/entities';
 import { AlertsIndicator } from '../atoms/AlertsIndicator';
 import { AlertBooking } from '../molecules/AlertBooking';
 
@@ -7,12 +7,14 @@ export function AlertsDrawer({
     opened,
     onClose,
     redAlertBookings,
-    yellowAlertBookings
+    yellowAlertBookings,
+    handleCreateNewAssignment
 }: {
     opened: boolean;
     onClose: () => void;
     redAlertBookings: BookingScheduler[];
     yellowAlertBookings: BookingScheduler[];
+    handleCreateNewAssignment: (booking: BookingScheduler, task?: Task) => void;
 }) {
     return (
         <Drawer
@@ -35,10 +37,18 @@ export function AlertsDrawer({
         >
             <Accordion>
                 {redAlertBookings.map((booking) => (
-                    <AlertBooking key={booking.booking.id} booking={booking} />
+                    <AlertBooking
+                        key={booking.booking.id}
+                        booking={booking}
+                        handleCreateNewAssignment={handleCreateNewAssignment}
+                    />
                 ))}
                 {yellowAlertBookings.map((booking) => (
-                    <AlertBooking key={booking.booking.id} booking={booking} />
+                    <AlertBooking
+                        key={booking.booking.id}
+                        booking={booking}
+                        handleCreateNewAssignment={handleCreateNewAssignment}
+                    />
                 ))}
             </Accordion>
         </Drawer>

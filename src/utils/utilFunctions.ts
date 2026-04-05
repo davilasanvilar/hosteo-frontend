@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Address, Assignment, BookingScheduler, SchedulerItem } from '../types/entities';
+import { Address, Assignment, AssignmentInfoForScheduler, BookingScheduler, SchedulerItem } from '../types/entities';
 import { ApiError, ApiResponse } from '../types/types';
 import { conf } from '../../conf';
 import { AssignmentFormFields } from '../types/forms';
@@ -36,7 +36,7 @@ export const groupItemsByDate = (
     startOfWeek: string,
     bookings: BookingScheduler[],
     assignments: Assignment[],
-    formFields?: AssignmentFormFields,
+    assignmentBeingModified?: AssignmentInfoForScheduler,
 ) => {
     const map = new Map<string, SchedulerItem[]>();
     Array.from({ length: 7 }).forEach((_, index) => {
@@ -66,6 +66,7 @@ export const groupItemsByDate = (
         });
     });
     assignments.forEach((assignment) => {
+        if (assignment.id === assignmentBeingModified?.id) return;
         const startDate = dayjs
             .unix(assignment.startDate)
             .format(conf.dateUrlFormat);
@@ -76,12 +77,12 @@ export const groupItemsByDate = (
             date: assignment.startDate
         });
     });
-    if (formFields?.startDate) {
-        map.get(dayjs(formFields.startDate).format(conf.dateUrlFormat))?.push({
+    if (assignmentBeingModified?.startDate) {
+        map.get(dayjs(assignmentBeingModified.startDate).format(conf.dateUrlFormat))?.push({
             type: 'incompleteAssignment',
-            item: formFields,
+            item: assignmentBeingModified,
             isStart: true,
-            date: dayjs(formFields.startDate).unix()
+            date: dayjs(assignmentBeingModified.startDate).unix()
         });
     }
     for (const dayItems of map.values()) {

@@ -1,16 +1,18 @@
 import { Accordion, Text } from '@mantine/core';
-import { BookingScheduler } from '../../types/entities';
+import { BookingScheduler, Task } from '../../types/entities';
 import { Alert } from '../../types/enums';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { conf } from '../../../conf';
 import dayjs from 'dayjs';
 import { TaskOrTemplateCard } from './TaskOrTemplateCard';
-import { useSchedulerContext } from '../../hooks/useSchedulerContext';
 
-export function AlertBooking({ booking }: { booking: BookingScheduler }) {
-    const { handleCreateNewAssignment: onOpenAssignmentScheduler } =
-        useSchedulerContext();
-
+export function AlertBooking({
+    booking,
+    handleCreateNewAssignment
+}: {
+    booking: BookingScheduler;
+    handleCreateNewAssignment: (booking: BookingScheduler, task?: Task) => void;
+}) {
     return (
         <Accordion.Item key={booking.booking.id} value={booking.booking.id}>
             <Accordion.Control>
@@ -66,7 +68,7 @@ export function AlertBooking({ booking }: { booking: BookingScheduler }) {
                         key={task.id}
                         item={task}
                         onClick={() => {
-                            onOpenAssignmentScheduler(booking, task);
+                            handleCreateNewAssignment(booking, task);
                         }}
                     />
                 ))}

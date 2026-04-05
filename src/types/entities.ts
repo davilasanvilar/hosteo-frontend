@@ -118,11 +118,12 @@ export interface BookingScheduler {
     unassignedTasks: Task[];
     hasUnfinishedTasks: boolean;
     apartmentReady: boolean;
+    prevBooking?: SimpleBookingSchedulerDto;
 }
 
 export interface SchedulerItem {
     type: 'booking' | 'assignment' | 'incompleteAssignment';
-    item: BookingScheduler | Assignment | AssignmentFormFields;
+    item: BookingScheduler | Assignment | AssignmentInfoForScheduler;
     isStart: boolean;
     date: number
 }
@@ -131,7 +132,7 @@ export interface SchedulerInfo {
     bookings: BookingScheduler[];
     redAlertBookings: BookingScheduler[];
     yellowAlertBookings: BookingScheduler[];
-    assignments: Assignment[];
+    assignments: AssignmentForSchedulerDto[];
     extraTasks: Task[];
 }
 
@@ -149,4 +150,42 @@ export interface ImpBooking {
 export interface ImportResult {
     successCount: number;
     failureCount: number;
+}
+
+export interface AssignmentForSchedulerDto extends Assignment {
+    prevBooking?: SimpleBookingSchedulerDto;
+    nextBooking?: SimpleBookingSchedulerDto;
+}
+
+
+export interface AssignmentInfoForScheduler {
+    id?: string;
+    task?: Task;
+    startDate?: string;
+    endDate?: string;
+    worker?: Worker;
+    state?: AssignmentState;
+    apartment?: Apartment;
+    prevBooking?: SimpleBookingSchedulerDto;
+    nextBooking?: SimpleBookingSchedulerDto;
+}
+
+export interface SimpleBookingSchedulerDto {
+    id: string;
+    startDate: number;
+    endDate: number;
+    name: string;
+    source: BookingSource;
+    alert?: Alert;
+}
+
+export const bookingSchedulerToSimpleBookingSchedulerDto = (booking: BookingScheduler): SimpleBookingSchedulerDto => {
+    return {
+        id: booking.booking.id,
+        alert: booking.alert,
+        endDate: booking.booking.endDate,
+        startDate: booking.booking.startDate,
+        name: booking.booking.name,
+        source: booking.booking.source
+    }
 }

@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useError } from '../../hooks/useError';
 import {
-    Assignment,
+    AssignmentForSchedulerDto,
     BookingScheduler,
+    bookingSchedulerToSimpleBookingSchedulerDto,
     SchedulerInfo,
     SchedulerItem,
-    Task,
-    Worker
+    Task
 } from '../../types/entities';
 import { ApiResponse } from '../../types/types';
 import { useAuth } from '../../hooks/useAuth';
@@ -24,20 +24,9 @@ import { SchedulerDay } from '../molecules/SchedulerDay';
 import { AlertsIndicator } from '../atoms/AlertsIndicator';
 import { AlertsDrawer } from './AlertsDrawer';
 import { AssignmentScheduler } from './AssignmentScheduler';
-
-export interface SchedulerContextType {
-    handleCreateNewAssignment: (booking: BookingScheduler, task: Task) => void;
-    handleUpdateAssignment: (assignment: Assignment) => void;
-    bookingToAssign: BookingScheduler | undefined;
-    taskToAssign: Task | undefined;
-    assignmentToUpdate: Assignment | undefined;
-    assignedWorker: Worker | undefined;
-    setAssignedWorker: React.Dispatch<SetStateAction<Worker | undefined>>;
-}
-
-export const SchedulerContext = createContext<SchedulerContextType>(
-    {} as SchedulerContextType
-);
+import { AssignmentFormFieldsWithObjects } from '../../types/forms';
+import { AssignmentState } from '../../types/enums';
+import { TaskWithApartment } from '../../types/entities';
 
 export function Scheduler() {
     const { handleError } = useError();
@@ -48,42 +37,48 @@ export function Scheduler() {
     const [startOfWeek, setStartOfWeek] = useState<string>(
         getStartOfWeek(new Date().toISOString())
     );
-    const [openedDrawer, setOpenedDrawer] = useState<boolean>(false);
+
     const [openedAssignmentScheduler, setOpenedAssignmentScheduler] =
         useState<boolean>(false);
+    const [openedDrawer, setOpenedDrawer] = useState<boolean>(false);
 
-    const [bookingToAssign, setBookingToAssign] = useState<
-        BookingScheduler | undefined
+    const [assignmentToModify, setAssignmentToModify] = useState<
+        AssignmentFormFieldsWithObjects | undefined
     >(undefined);
-    const [taskToAssign, setTaskToAssign] = useState<Task | undefined>(
-        undefined
-    );
-    const [assignmentToUpdate, setAssignmentToUpdate] = useState<
-        Assignment | undefined
-    >(undefined);
-    const [assignedWorker, setAssignedWorker] = useState<Worker | undefined>(
-        undefined
-    );
 
     const handleCreateNewAssignment = (
         booking: BookingScheduler,
-        task: Task
+        task?: Task
     ) => {
-        setBookingToAssign(booking);
-        setTaskToAssign(task);
+        const assignmentToModify: AssignmentFormFieldsWithObjects = {
+            id: undefined,
+            task: task,
+            apartment: booking.booking.apartment,
+            worker: undefined,
+            startDate: undefined,
+            endDate: undefined,
+            state: AssignmentState.PENDING,
+            prevBooking: booking.prevBooking,
+            nextBooking: bookingSchedulerToSimpleBookingSchedulerDto(booking)
+        };
+        setAssignmentToModify(assignmentToModify);
         setOpenedAssignmentScheduler(true);
     };
 
-    const handleUpdateAssignment = (assignment: Assignment) => {
-        setAssignmentToUpdate(assignment);
+    const handleUpdateAssignment = (assignment: AssignmentForSchedulerDto) => {
+        const assignmentToModify: AssignmentFormFieldsWithObjects = {
+            id: assignment.id,
+            task: assignment.task,
+            apartment: assignment.task.apartment,
+            worker: assignment.worker,
+            startDate: dayjs.unix(assignment.startDate).toISOString(),
+            endDate: dayjs.unix(assignment.endDate).toISOString(),
+            state: assignment.state,
+            prevBooking: assignment.prevBooking,
+            nextBooking: assignment.nextBooking
+        };
+        setAssignmentToModify(assignmentToModify);
         setOpenedAssignmentScheduler(true);
-    };
-
-    const onCloseAssignmentScheduler = () => {
-        setOpenedAssignmentScheduler(false);
-        setBookingToAssign(undefined);
-        setTaskToAssign(undefined);
-        setAssignmentToUpdate(undefined);
     };
 
     const searchSchedulerData = async (
@@ -132,17 +127,7 @@ export function Scheduler() {
     }, [isError, error]);
 
     return (
-        <SchedulerContext.Provider
-            value={{
-                handleCreateNewAssignment,
-                handleUpdateAssignment,
-                bookingToAssign,
-                taskToAssign,
-                assignmentToUpdate,
-                assignedWorker,
-                setAssignedWorker
-            }}
-        >
+        <>
             <div
                 style={{
                     display: 'flex',
@@ -193,11 +178,13 @@ export function Scheduler() {
                 onClose={() => setOpenedDrawer(false)}
                 redAlertBookings={schedulerInfo?.redAlertBookings || []}
                 yellowAlertBookings={schedulerInfo?.yellowAlertBookings || []}
+                handleCreateNewAssignment={handleCreateNewAssignment}
             />
             <AssignmentScheduler
                 opened={openedAssignmentScheduler}
-                onClose={onCloseAssignmentScheduler}
+                onClose={() => setOpenedAssignmentScheduler(false)}
+                assignmentToModify={assignmentToModify}
             />
-        </SchedulerContext.Provider>
+        </>
     );
 }

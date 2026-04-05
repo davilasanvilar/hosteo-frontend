@@ -3,11 +3,11 @@ import { Text } from '@mantine/core';
 import { SchedulerBookingCard } from './SchedulerBookingCard';
 import {
     Assignment,
+    AssignmentInfoForScheduler,
     BookingScheduler,
     SchedulerItem
 } from '../../types/entities';
 import { SchedulerAssignmentCard } from './SchedulerAssignmentCard';
-import { AssignmentFormFields } from '../../types/forms';
 import { IncompleteAssignmentCard } from './IncompleteAssignmentCard.tsx';
 
 export function SchedulerDay({
@@ -95,11 +95,11 @@ export function SchedulerDay({
                         );
                     }
                     const incompleteAssignment =
-                        item.item as AssignmentFormFields;
+                        item.item as AssignmentInfoForScheduler;
                     return (
                         <IncompleteAssignmentCard
                             key={'incomplete_assignment'}
-                            formFields={incompleteAssignment}
+                            assignment={incompleteAssignment}
                         />
                     );
                 })}

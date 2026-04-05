@@ -1,15 +1,13 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
-import { BookingScheduler, Task } from '../../types/entities';
-import { Alert } from '../../types/enums';
 import { Text } from '@mantine/core';
 import { TaskCategoryBadge } from '../atoms/TaskCategoryBadge';
+import { IconAlertTriangle } from '@tabler/icons-react';
+import { Alert } from '../../types/enums';
+import { AssignmentFormFieldsWithObjects } from '../../types/forms';
 
 export function BookingAndTaskInfo({
-    bookingToAssign,
-    taskToAssign
+    assignment
 }: {
-    bookingToAssign: BookingScheduler;
-    taskToAssign: Task;
+    assignment?: AssignmentFormFieldsWithObjects;
 }) {
     return (
         <div
@@ -31,7 +29,8 @@ export function BookingAndTaskInfo({
             >
                 <IconAlertTriangle
                     color={
-                        bookingToAssign?.alert === Alert.DAYS_LEFT_5_UNASSIGNED
+                        assignment?.nextBooking?.alert ===
+                        Alert.DAYS_LEFT_5_UNASSIGNED
                             ? 'var(--mantine-color-yellow-5)'
                             : 'var(--mantine-color-error-5)'
                     }
@@ -39,7 +38,7 @@ export function BookingAndTaskInfo({
                     style={{ flexShrink: 0 }}
                 />
                 <Text c="dimmed" lineClamp={1}>
-                    {bookingToAssign?.booking.apartment.name}
+                    {assignment?.apartment?.name ?? ''}
                 </Text>
             </span>
             <div
@@ -50,13 +49,17 @@ export function BookingAndTaskInfo({
                     height: '100%'
                 }}
             >
-                <Text lineClamp={1}>{taskToAssign?.name}</Text>
-                {taskToAssign?.category && (
-                    <TaskCategoryBadge category={taskToAssign.category} />
+                {assignment?.task?.name && (
+                    <Text lineClamp={1}>{assignment?.task?.name}</Text>
                 )}
-                <Text lineClamp={1} style={{ flexShrink: 0 }}>
-                    {taskToAssign?.duration} min
-                </Text>
+                {assignment?.task?.category && (
+                    <TaskCategoryBadge category={assignment?.task.category} />
+                )}
+                {assignment?.task && assignment.task.duration > 0 && (
+                    <Text lineClamp={1} style={{ flexShrink: 0 }}>
+                        {assignment?.task?.duration} min
+                    </Text>
+                )}
             </div>
         </div>
     );

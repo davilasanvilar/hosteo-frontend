@@ -1,5 +1,6 @@
-import { Address, Apartment, Assignment, Booking, Task, Template } from './entities';
+import { Address, Apartment, Assignment, Booking, BookingScheduler, SimpleBookingSchedulerDto, Task, TaskWithApartment, Template } from './entities';
 import {
+    Alert,
     ApartmentState,
     AssignmentState,
     BookingSource,
@@ -353,6 +354,7 @@ export interface AssignmentFormFields {
 }
 
 export const assignmentToForm = (assignment: Assignment | undefined): AssignmentFormFields => {
+    console.log('assignmentToForm', assignment);
     if (!assignment) {
         return {
             taskId: '',
@@ -392,6 +394,39 @@ export const formFieldsToUpdateAssignmentForm = (formFields: AssignmentFormField
         endDate: dayjs(formFields.endDate, conf.dateInputFormat).unix(),
         workerId: formFields.workerId,
         state: formFields.state
+    };
+};
+
+export interface AssignmentFormFieldsWithObjects {
+    id?: string;
+    task?: Task;
+    startDate?: string;
+    endDate?: string;
+    worker?: Worker;
+    state?: AssignmentState;
+    apartment?: Apartment;
+    prevBooking?: SimpleBookingSchedulerDto;
+    nextBooking?: SimpleBookingSchedulerDto;
+}
+
+
+export const assignmentFormFieldsWithObjectsToForm = (assignment: AssignmentFormFieldsWithObjects | undefined): AssignmentFormFields => {
+    if (!assignment) {
+        return {
+            taskId: '',
+            startDate: '',
+            endDate: '',
+            workerId: '',
+            state: AssignmentState.PENDING
+        };
+    }
+    return {
+        id: assignment.id ?? '',
+        taskId: assignment.task?.id ?? '',
+        startDate: assignment.startDate ?? '',
+        endDate: assignment.endDate ?? '',
+        workerId: assignment.worker?.id ?? '',
+        state: assignment.state ?? AssignmentState.PENDING
     };
 };
 

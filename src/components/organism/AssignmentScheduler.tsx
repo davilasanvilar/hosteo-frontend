@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 import { useError } from '../../hooks/useError';
 import {
     Assignment,
+    Worker,
     SchedulerInfo,
-    SchedulerItem,
-    Worker
+    SchedulerItem
 } from '../../types/entities';
 import { ApiResponse } from '../../types/types';
 import { useAuth } from '../../hooks/useAuth';
@@ -19,14 +19,14 @@ import dayjs from 'dayjs';
 import { SchedulerDatePicker } from '../molecules/SchedulerDatePicker';
 import { conf } from '../../../conf';
 import { SchedulerDay } from '../molecules/SchedulerDay';
-import { AlertsDrawer } from './AlertsDrawer';
 import { Button, Modal, Select } from '@mantine/core';
-import { useSchedulerContext } from '../../hooks/useSchedulerContext';
 import { SelectWorkerModal } from '../modals/SelectWorkerModal';
 import { BookingAndTaskInfo } from '../molecules/BookingAndTaskInfo';
 import { SchedulerAssignWorker } from '../molecules/SchedulerAssignWorker';
 import {
     AssignmentFormFields,
+    AssignmentFormFieldsWithObjects,
+    assignmentFormFieldsWithObjectsToForm,
     assignmentToForm,
     formFieldsToCreateAssignmentForm,
     formFieldsToUpdateAssignmentForm
@@ -41,21 +41,16 @@ import { AssignmentStateBadge } from '../atoms/AssignmentStateBadge.tsx';
 
 export function AssignmentScheduler({
     opened,
-    onClose
+    onClose,
+    assignmentToModify
 }: {
     opened: boolean;
     onClose: () => void;
+    assignmentToModify?: AssignmentFormFieldsWithObjects;
 }) {
     const { queryClient } = useReactQuery();
     const { create, update } = useCrud<Assignment>('assignment');
     const { handleError } = useError();
-    const {
-        bookingToAssign,
-        taskToAssign,
-        assignmentToUpdate,
-        assignedWorker,
-        setAssignedWorker
-    } = useSchedulerContext();
     const [selectWorkerModalOpened, setSelectWorkerModalOpened] =
         useState<boolean>(false);
     const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -63,23 +58,29 @@ export function AssignmentScheduler({
     const [formFields, setFormFields] = useState<AssignmentFormFields>(
         assignmentToForm(undefined)
     );
+    const [selectedWorker, setSelectedWorker] = useState<Worker | undefined>();
+
+    useLayoutEffect(() => {
+        if (assignmentToModify) {
+            setSelectedWorker(assignmentToModify.worker);
+            setFormFields(
+                assignmentFormFieldsWithObjectsToForm(assignmentToModify)
+            );
+        } else {
+            setFormFields(assignmentToForm(undefined));
+        }
+    }, [assignmentToModify]);
 
     const handleClose = () => {
-        onClose();
-        setAssignedWorker(undefined);
         setFormFields(assignmentToForm(undefined));
+        setSelectedWorker(undefined);
+        onClose();
     };
-
-    useEffect(() => {
-        if (assignmentToUpdate) {
-            setFormFields(assignmentToForm(assignmentToUpdate));
-        }
-    }, [assignmentToUpdate]);
 
     const [startOfWeek, setStartOfWeek] = useState<string>(
         getStartOfWeek(new Date().toISOString())
     );
-    const [openedDrawer, setOpenedDrawer] = useState<boolean>(false);
+
     const searchSchedulerData = async (
         date: string
     ): Promise<SchedulerInfo> => {
@@ -104,21 +105,21 @@ export function AssignmentScheduler({
         isError,
         error
     } = useQuery<SchedulerInfo>({
-        queryKey: [
-            'assignSchedulerInfo',
-            taskToAssign?.id,
-            bookingToAssign?.booking.id,
-            startOfWeek
-        ],
+        queryKey: ['assignSchedulerInfo', startOfWeek],
         queryFn: async () => {
             const data = await searchSchedulerData(startOfWeek);
             setItemsByDate(
-                groupItemsByDate(
-                    startOfWeek,
-                    data.bookings,
-                    data.assignments,
-                    formFields
-                )
+                groupItemsByDate(startOfWeek, data.bookings, data.assignments, {
+                    id: formFields?.id,
+                    startDate: formFields?.startDate,
+                    endDate: formFields?.endDate,
+                    worker: selectedWorker,
+                    state: formFields?.state,
+                    apartment: assignmentToModify?.apartment,
+                    task: assignmentToModify?.task,
+                    prevBooking: assignmentToModify?.prevBooking,
+                    nextBooking: assignmentToModify?.nextBooking
+                })
             );
             return data;
         },
@@ -128,6 +129,10 @@ export function AssignmentScheduler({
         retry: false,
         enabled: !!startOfWeek
     });
+
+    useEffect(() => {
+        reloadSchedulerInfo();
+    }, [formFields]);
 
     const { error: startDateError, validate: startDateValidate } = useValidator(
         formFields.startDate,
@@ -153,9 +158,9 @@ export function AssignmentScheduler({
     }, [isError, error]);
 
     const createAssignment = async () => {
-        if (!taskToAssign) return;
+        if (!formFields.taskId) return;
         await create(
-            formFieldsToCreateAssignmentForm(formFields, taskToAssign.id)
+            formFieldsToCreateAssignmentForm(formFields, formFields.taskId)
         );
     };
 
@@ -189,7 +194,7 @@ export function AssignmentScheduler({
         if (!startDateValidate() || !endDateValidate() || !stateValidate())
             return;
 
-        if (assignmentToUpdate) {
+        if (formFields.id) {
             updateAssignmentMutation();
         } else {
             createAssignmentMutation();
@@ -242,10 +247,6 @@ export function AssignmentScheduler({
         });
     };
 
-    useEffect(() => {
-        reloadSchedulerInfo();
-    }, [formFields]);
-
     return (
         <Modal
             opened={opened}
@@ -295,16 +296,12 @@ export function AssignmentScheduler({
                         date={startOfWeek}
                         setDate={setStartOfWeek}
                     />
-                    {bookingToAssign && taskToAssign && (
-                        <BookingAndTaskInfo
-                            bookingToAssign={bookingToAssign}
-                            taskToAssign={taskToAssign}
-                        />
-                    )}
+                    <BookingAndTaskInfo assignment={assignmentToModify} />
                 </div>
                 <AssignmentTimePicker
                     formFields={formFields}
                     setFormFields={setFormFields}
+                    duration={assignmentToModify?.task?.duration || 0}
                 />
                 <div
                     style={{
@@ -316,7 +313,7 @@ export function AssignmentScheduler({
                     }}
                 >
                     <SchedulerAssignWorker
-                        assignedWorker={assignedWorker}
+                        assignedWorker={selectedWorker}
                         setSelectWorkerModalOpened={setSelectWorkerModalOpened}
                     />
                     <Select
@@ -366,12 +363,24 @@ export function AssignmentScheduler({
                                 ) || []
                             }
                             disabled={
-                                bookingToAssign &&
-                                dayjs(date).isAfter(
-                                    dayjs.unix(
-                                        bookingToAssign?.booking.startDate
-                                    )
-                                )
+                                (assignmentToModify?.prevBooking?.endDate !==
+                                    undefined &&
+                                    dayjs(date).isBefore(
+                                        dayjs.unix(
+                                            assignmentToModify?.prevBooking
+                                                ?.endDate
+                                        ),
+                                        'day'
+                                    )) ||
+                                (assignmentToModify?.nextBooking?.endDate !==
+                                    undefined &&
+                                    dayjs(date).isAfter(
+                                        dayjs.unix(
+                                            assignmentToModify?.nextBooking
+                                                ?.endDate
+                                        ),
+                                        'day'
+                                    ))
                             }
                             isSelected={dayjs(formFields.startDate).isSame(
                                 dayjs(date),
@@ -392,8 +401,7 @@ export function AssignmentScheduler({
                 <Button
                     variant="outline"
                     onClick={() => {
-                        onClose();
-                        setAssignedWorker(undefined);
+                        handleClose();
                     }}
                 >
                     Cancel
@@ -403,40 +411,24 @@ export function AssignmentScheduler({
                     onClick={onSubmit}
                     disabled={disabledButton}
                 >
-                    {assignmentToUpdate ? 'Update' : 'Create'}
+                    {formFields?.id ? 'Update' : 'Create'}
                 </Button>
             </div>
-            <AlertsDrawer
-                opened={openedDrawer}
-                onClose={() => setOpenedDrawer(false)}
-                redAlertBookings={schedulerInfo?.redAlertBookings || []}
-                yellowAlertBookings={schedulerInfo?.yellowAlertBookings || []}
-            />
-            <Modal
+
+            <SelectWorkerModal
                 opened={selectWorkerModalOpened}
                 onClose={() => setSelectWorkerModalOpened(false)}
-                title="Select Worker"
-                closeOnEscape={false}
-                onKeyDown={(e) => {
-                    if (e.key === 'Escape') {
-                        e.stopPropagation();
-                        setSelectWorkerModalOpened(false);
-                    }
-                }}
-            >
-                <SelectWorkerModal
-                    opened={selectWorkerModalOpened}
-                    onClose={() => setSelectWorkerModalOpened(false)}
-                    onSelect={(worker) => {
-                        setAssignedWorker(worker);
-                        setFormFields((prev) => ({
+                onSelect={(worker) => {
+                    setFormFields((prev) => {
+                        return {
                             ...prev,
                             workerId: worker.id
-                        }));
-                        setSelectWorkerModalOpened(false);
-                    }}
-                />
-            </Modal>
+                        };
+                    });
+                    setSelectedWorker(worker);
+                    setSelectWorkerModalOpened(false);
+                }}
+            />
         </Modal>
     );
 }

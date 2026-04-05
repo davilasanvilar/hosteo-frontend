@@ -2,16 +2,16 @@ import dayjs from 'dayjs';
 import { conf } from '../../../conf';
 import { AssignmentFormFields } from '../../types/forms';
 import { CustomTimePicker } from './CustomTimePicker';
-import { useSchedulerContext } from '../../hooks/useSchedulerContext';
 
 export function AssignmentTimePicker({
     formFields,
-    setFormFields
+    setFormFields,
+    duration
 }: {
     formFields: AssignmentFormFields;
     setFormFields: React.Dispatch<React.SetStateAction<AssignmentFormFields>>;
+    duration: number;
 }) {
-    const { taskToAssign } = useSchedulerContext();
     return (
         <div
             style={{
@@ -27,9 +27,6 @@ export function AssignmentTimePicker({
                 date={formFields.startDate}
                 updateDate={(value: string) =>
                     setFormFields((oldValue) => {
-                        const duration = taskToAssign?.duration
-                            ? taskToAssign.duration
-                            : 0;
                         return {
                             ...oldValue,
                             startDate: value,
